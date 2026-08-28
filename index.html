@@ -378,8 +378,9 @@ a.ct:hover{background:rgba(201,162,39,.07);color:var(--paper)}
     <div class="bd">
       <div class="lock" id="admLock">
         <p>Acesso restrito. Entre para editar preços, nomes e descrições.</p>
-        <input type="text" id="admUser" placeholder="Usuário" autocomplete="username" style="margin:12px 0 10px">
-        <input type="password" id="admSenha" placeholder="Senha" autocomplete="current-password" style="margin-bottom:12px">
+        <input type="text" id="admUser" placeholder="Usuário" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" style="margin:12px 0 10px">
+        <input type="password" id="admSenha" placeholder="Senha" autocomplete="current-password" autocapitalize="none" autocorrect="off" spellcheck="false" style="margin-bottom:12px">
+        <p id="admErro" style="display:none;color:#e06a5a;font-size:.85rem;margin:0 0 10px"></p>
         <button class="btn-s gold" id="admEntrar" style="width:100%">Entrar</button>
       </div>
       <div id="admBody" style="display:none">
@@ -396,6 +397,7 @@ a.ct:hover{background:rgba(201,162,39,.07);color:var(--paper)}
           <button class="btn-s" id="bulkFixo">Aplicar preço em todos</button>
           <button class="btn-s" id="bulkPct">Reajustar em %</button>
         </div>
+        <p id="admOk" style="display:none;color:#5fd39a;font-size:.85rem;margin:0 0 12px"></p>
         <div class="adm-list" id="admList"></div>
         <textarea id="admJson" style="display:none;margin-top:14px" rows="6" readonly></textarea>
         <p class="hint">As alterações ficam salvas neste navegador. Para gravar de vez no site, clique em <strong>Copiar JSON</strong> e me envie o conteúdo. Atalhos: <strong>Alt + A</strong> ou adicione <strong>#admin</strong> ao final do endereço.</p>
@@ -1066,14 +1068,20 @@ document.addEventListener("keydown", e => {
 if(location.hash === "#admin") abrirAdm();
 
 function entrar(){
-  const u = document.getElementById("admUser").value.trim();
-  const s = document.getElementById("admSenha").value;
-  if(u === ADM_USER && s === ADM_SENHA){
+  const u = document.getElementById("admUser").value.trim().toLowerCase();
+  const s = document.getElementById("admSenha").value.trim();
+  const err = document.getElementById("admErro");
+  if(u === ADM_USER.toLowerCase() && s === ADM_SENHA){
+    err.style.display = "none";
     document.getElementById("admLock").style.display = "none";
     document.getElementById("admBody").style.display = "";
     document.getElementById("admSenha").value = "";
     renderAdm();
-  } else toast("Usuário ou senha incorretos");
+  } else {
+    err.textContent = "Usuário ou senha incorretos. Confira se o teclado não colocou letra maiúscula.";
+    err.style.display = "";
+    toast("Usuário ou senha incorretos");
+  }
 }
 document.getElementById("admEntrar").onclick = entrar;
 ["admUser","admSenha"].forEach(id => document.getElementById(id)
@@ -1117,7 +1125,13 @@ function persistir(){
   store.set("pfp_produtos", m);
   renderGrid(); renderCart();
 }
-document.getElementById("admSalvar").onclick = () => { coletar(); persistir(); toast("Alterações salvas"); };
+document.getElementById("admSalvar").onclick = () => {
+  coletar(); persistir();
+  const ok = document.getElementById("admOk");
+  ok.textContent = "✓ " + PRODUTOS.length + " itens salvos neste navegador às " + new Date().toLocaleTimeString("pt-BR");
+  ok.style.display = "";
+  toast("Alterações salvas");
+};
 document.getElementById("admReset").onclick = () => {
   PRODUTOS = PRODUTOS_BASE.map(b => Object.assign({}, b));
   store.set("pfp_produtos", null);
