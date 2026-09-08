@@ -932,6 +932,40 @@ const brl = n => "R$ " + n.toFixed(2).replace(".", ",");
 const waLink = t => "https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(t);
 const esc = s => String(s).replace(/[<>&"]/g, c => ({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"}[c]));
 
+/* ---------- rastreamento de trafego pago ---------- */
+/* Cole o ID do Pixel da Meta entre as aspas (so numeros). Vazio = rastreamento desligado. */
+const PIXEL_ID = "";
+
+/* Guarda de qual anuncio a visita veio, por 30 dias. */
+const ORIGEM = (function(){
+  const q = new URLSearchParams(location.search), o = {t: Date.now()};
+  ["utm_source","utm_medium","utm_campaign","utm_content","utm_term"].forEach(c => {
+    const v = q.get(c); if(v) o[c.slice(4)] = v.slice(0,60);
+  });
+  if(q.get("fbclid")) o.fbclid = 1;
+  if(Object.keys(o).length > 1){ store.set("pfp_origem", o); return o; }
+  const g = store.get("pfp_origem");
+  return (g && Date.now() - (g.t || 0) < 2592e6) ? g : null;
+})();
+
+/* Assinatura que vai junto na mensagem do WhatsApp: diz qual anuncio trouxe a cliente. */
+function selo(){
+  if(!ORIGEM) return "";
+  const p = [ORIGEM.source, ORIGEM.campaign, ORIGEM.content].filter(Boolean).join(" · ");
+  return "\n\n_origem: " + (p || "anuncio meta") + "_";
+}
+
+function ev(nome, dados){ if(window.fbq) window.fbq("track", nome, dados || {}); }
+if(PIXEL_ID){
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
+  (window,document,"script","https://connect.facebook.net/en_US/fbevents.js");
+  window.fbq("init", PIXEL_ID); ev("PageView");
+}
+const jaVisto = new Set();
+
 let PRODUTOS = (function(){
   const s = store.get("pfp_produtos");
   return PRODUTOS_BASE.map(b => {
@@ -942,7 +976,10 @@ let PRODUTOS = (function(){
 let CART = store.get("pfp_cart") || {};   // chave: "id|tamanho"
 let FILTRO = "all";
 
-document.querySelectorAll(".ctaW").forEach(a => a.href = waLink(MSG));
+document.querySelectorAll(".ctaW").forEach(a => {
+  a.href = waLink(MSG + selo());
+  a.addEventListener("click", () => ev("Contact"));
+});
 
 /* ---------- catalogo ---------- */
 const grid = document.getElementById("grid");
@@ -987,6 +1024,12 @@ grid.addEventListener("click", e => {
   if(vm){
     const d = vm.previousElementSibling;
     vm.textContent = d.classList.toggle("clamp") ? "ver mais" : "ver menos";
+    const pid = vm.closest(".card").querySelector(".add").dataset.id;
+    if(!jaVisto.has(pid)){
+      jaVisto.add(pid);
+      const pr = PRODUTOS.find(x => x.id === pid);
+      if(pr) ev("ViewContent", {content_ids:[pr.id], content_name:pr.n, content_type:"product", value:pr.p, currency:"BRL"});
+    }
     return;
   }
   const sz = e.target.closest(".sz");
@@ -998,6 +1041,8 @@ grid.addEventListener("click", e => {
   const card = b.closest(".card");
   const t = card.querySelector(".sz.on")?.dataset.t || TAMANHOS[1];
   addItem(b.dataset.id, t);
+  const pr = PRODUTOS.find(x => x.id === b.dataset.id);
+  if(pr) ev("AddToCart", {content_ids:[pr.id], content_name:pr.n, content_type:"product", value:pr.p, currency:"BRL"});
   b.textContent = "Na sacola ✓"; b.classList.add("ok");
   setTimeout(() => { b.textContent = "Comprar"; b.classList.remove("ok"); }, 1200);
 });
@@ -1052,7 +1097,7 @@ function renderCart(){
 function pedidoTexto(L, tot, n){
   let t = "*Pedido — Ponto Fitness Premium*\n\n";
   L.forEach(l => { t += "• " + l.p.n + "\n  Tam. " + l.t + " · " + l.q + "x " + brl(l.p.p) + " = " + brl(l.q*l.p.p) + "\n"; });
-  t += "\n" + n + (n>1?" peças":" peça") + "\n*Total: " + brl(tot) + "*\n\nPode confirmar a cor e o frete para o meu CEP?";
+  t += "\n" + n + (n>1?" peças":" peça") + "\n*Total: " + brl(tot) + "*\n\nPode confirmar a cor e o frete para o meu CEP?" + selo();
   return t;
 }
 document.getElementById("citems").addEventListener("click", e => {
@@ -1064,7 +1109,13 @@ document.getElementById("citems").addEventListener("click", e => {
 });
 document.getElementById("limpar").onclick = () => { CART = {}; saveCart(); };
 document.getElementById("finalizar").addEventListener("click", e => {
-  if(!Object.keys(CART).length){ e.preventDefault(); toast("Adicione uma peça primeiro"); }
+  if(!Object.keys(CART).length){ e.preventDefault(); toast("Adicione uma peça primeiro"); return; }
+  const L = linhas();
+  ev("InitiateCheckout", {
+    content_ids: L.map(l => l.p.id), content_type: "product",
+    num_items: L.reduce((a,l) => a+l.q, 0),
+    value: L.reduce((a,l) => a + l.q*l.p.p, 0), currency: "BRL"
+  });
 });
 
 /* ---------- painel admin ---------- */
