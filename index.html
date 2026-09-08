@@ -100,7 +100,11 @@ section{padding:88px 0;position:relative}
 .card-b{padding:18px;display:flex;flex-direction:column;gap:9px;flex:1}
 .cat{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:#8a6d12;font-weight:600}
 .card h3{font-size:1.08rem;color:var(--ink);line-height:1.25}
-.desc{font-size:.83rem;color:#6b6459;margin:0;flex:1}
+.desc{font-size:.83rem;color:#6b6459;margin:0;flex:1;white-space:pre-line}
+.desc.clamp{display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden;flex:0 1 auto}
+.vermais{align-self:flex-start;background:none;border:0;padding:0;margin:-4px 0 0;font-size:.76rem;font-weight:600;color:#8a6d12;cursor:pointer;border-bottom:1px solid rgba(138,109,18,.35);transition:.18s}
+.vermais:hover{color:var(--ink);border-bottom-color:var(--ink)}
+.card-b>.row{margin-top:auto}
 .row{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:4px}
 .lbl{display:block;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:#948c80}
 .price{font-family:var(--f-d);font-size:1.45rem;color:var(--ink);display:block;line-height:1.15}
@@ -408,11 +412,11 @@ a.ct:hover{background:rgba(201,162,39,.07);color:var(--paper)}
 const PRODUTOS_BASE = [
 {
 "id": "P001",
-"n": "Conjunto Short · Modelo 01",
-"p": 69.9,
+"n": "Conjunto supreme promocional fz3724758",
+"p": 49.97,
 "v": 299,
 "c": "Conjuntos Short",
-"d": "Conjunto de top e short em suplex de alta compressão. Cintura alta que não marca, tecido opaco no agachamento e secagem rápida. Perfeito para treino, caminhada ou o dia a dia.",
+"d": "🔥 CONJUNTO SHORT — PROMOÇÃO 🔥\n\nLook completo para quem ama conforto e praticidade! ✨ Composto por short e parte de cima, é leve, versátil e ideal para treinos ou para o dia a dia.\n\n✨ Destaques:\n• Conjunto confortável\n• Modelagem leve e prática\n• Boa liberdade de movimento\n• Fácil de combinar\n• Perfeito para academia e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para você se  movimentar com liberdade e estilo!!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1768833010_f5b32063fbb2a2abd465.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1768833070_053fcd12c122932f83f3.webp"
@@ -420,11 +424,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P002",
-"n": "Conjunto Legging · Modelo 01",
-"p": 89.9,
+"n": "Conjunto supreme promocional fz3724370",
+"p": 59.98,
 "v": 249,
 "c": "Conjuntos Calça",
-"d": "Conjunto de top e legging com cós alto e modelagem que afina a silhueta. Tecido encorpado, opaco e com ótima recuperação — não desbota nem afina com o uso.",
+"d": "🔥 CONJUNTO CALÇA — PROMOÇÃO 🔥\n\nSeu novo look favorito para treinar e arrasar! ✨ Um conjunto pensado para unir conforto, estilo e praticidade, com uma combinação que deixa o visual moderno e versátil.\n\n💫 Destaques:\n• Conjunto com calça\n• Tecido confortável\n• Modelagem moderna\n• Ótimo ajuste ao corpo\n• Ideal para academia e dia a dia\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Não usar alvejante, não deixar de molho ou torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para deixar sua rotina ainda mais estilosa!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1768828171_f2acb9e2b9bd419ac813.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1768828051_6f308906b23b13003458.webp"
@@ -432,11 +436,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P003",
-"n": "Conjunto Short · Modelo 02",
-"p": 69.9,
+"n": "Conjunto supreme promocional fz3598104",
+"p": 59.98,
 "v": 209,
 "c": "Conjuntos Short",
-"d": "Conjunto de top e short em suplex de alta compressão. Cintura alta que não marca, tecido opaco no agachamento e secagem rápida. Perfeito para treino, caminhada ou o dia a dia.",
+"d": "🔥 CONJUNTO SHORT — PROMOÇÃO 🔥\n\nLook completo para quem ama conforto e praticidade! ✨ Composto por short e parte de cima, é leve, versátil e ideal para treinos ou para o dia a dia.\n\n✨ Destaques:\n• Conjunto confortável\n• Modelagem leve e prática\n• Boa liberdade de movimento\n• Fácil de combinar\n• Perfeito para academia e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para você se movimentar com liberdade e estilo!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1764206718_ef8fcdbb5371b2728473.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1764206764_c23235f17bf512684d8c.webp"
@@ -444,11 +448,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P004",
-"n": "Conjunto Short Saia · Modelo 01",
-"p": 89.9,
+"n": "Conjunto supreme promocional fz3075156",
+"p": 49.97,
 "v": 199,
 "c": "Short Saia",
-"d": "Conjunto com short saia: o short de compressão por baixo e o caimento leve da saia por cima. Liberdade para treinar com a elegância de quem sai do estúdio direto para a rua.",
+"d": "🔥 SHORT DUPLO SAIA — PROMOÇÃO 🔥\n\nFeminilidade, conforto e praticidade em uma só peça! ✨ O modelo une a delicadeza da saia com a segurança do short interno, garantindo liberdade para se movimentar durante os treinos.\n\n✨ Destaques:\n• Saia com short interno\n• Confortável e leve\n• Ótima liberdade de movimento\n• Modelagem moderna\n• Ideal para academia e dia a dia\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Estilo e conforto para acompanhar cada movimento!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1748793618_6fa8e22ec32a0bb134ff.jpg.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1748793616_2a652d3bf5f8fc325c59.jpg.webp"
@@ -456,11 +460,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P005",
-"n": "Conjunto Legging · Modelo 02",
-"p": 89.9,
+"n": "Conjunto supreme promocional fz3984657",
+"p": 59.98,
 "v": 191,
 "c": "Conjuntos Calça",
-"d": "Conjunto de top e legging com cós alto e modelagem que afina a silhueta. Tecido encorpado, opaco e com ótima recuperação — não desbota nem afina com o uso.",
+"d": "🔥 CONJUNTO CALÇA — PROMOÇÃO 🔥\n\nSeu novo look favorito para treinar e arrasar! ✨ Um conjunto pensado para unir conforto, estilo e praticidade, com uma combinação que deixa o visual moderno e versátil.\n\n💫 Destaques:\n• Conjunto com calça\n• Tecido confortável\n• Modelagem moderna\n• Ótimo ajuste ao corpo\n• Ideal para academia e dia a dia\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Não usar alvejante, não deixar de molho ou torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para deixar sua rotina ainda mais estilosa!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1768834896_54d67ba0dacad999dd68.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1768834815_5e34a1a9c122d79156aa.webp"
@@ -468,11 +472,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P006",
-"n": "Conjunto Legging · Modelo 03",
-"p": 89.9,
+"n": "Conjunto supreme promocional fz3724281",
+"p": 59.98,
 "v": 189,
 "c": "Conjuntos Calça",
-"d": "Conjunto de top e legging com cós alto e modelagem que afina a silhueta. Tecido encorpado, opaco e com ótima recuperação — não desbota nem afina com o uso.",
+"d": "🔥 CONJUNTO CALÇA — PROMOÇÃO 🔥\n\nSeu novo look favorito para treinar e arrasar! ✨ Um conjunto pensado para unir conforto, estilo e praticidade, com uma combinação que deixa o visual moderno e versátil.\n\n💫 Destaques:\n• Conjunto com calça\n• Tecido confortável\n• Modelagem moderna\n• Ótimo ajuste ao corpo\n• Ideal para academia e dia a dia\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Não usar alvejante, não deixar de molho ou torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para deixar sua rotina ainda mais estilosa!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1768826307_3b6eb8db462838c47702.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1768826300_0baecf60cf0cb25012f6.webp"
@@ -480,11 +484,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P007",
-"n": "Conjunto Legging · Modelo 04",
-"p": 89.9,
+"n": "Conjunto supreme promocional fz3724838",
+"p": 59.98,
 "v": 168,
 "c": "Conjuntos Calça",
-"d": "Conjunto de top e legging com cós alto e modelagem que afina a silhueta. Tecido encorpado, opaco e com ótima recuperação — não desbota nem afina com o uso.",
+"d": "🔥 CONJUNTO CALÇA — PROMOÇÃO 🔥\n\nSeu novo look favorito para treinar e arrasar! ✨ Um conjunto pensado para unir conforto, estilo e praticidade, com uma combinação que deixa o visual moderno e versátil.\n\n💫 Destaques:\n• Conjunto com calça\n• Tecido confortável\n• Modelagem moderna\n• Ótimo ajuste ao corpo\n• Ideal para academia e dia a dia\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Não usar alvejante, não deixar de molho ou torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para deixar sua rotina ainda mais estilosa!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1768834366_20718a56270cf8d8bf9e.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1768834286_4218c7070b849ea7bee4.webp"
@@ -492,11 +496,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P008",
-"n": "Conjunto Legging · Modelo 05",
-"p": 89.9,
+"n": "Conjunto supreme promocional fz3724260",
+"p": 59.98,
 "v": 163,
 "c": "Conjuntos Calça",
-"d": "Conjunto de top e legging com cós alto e modelagem que afina a silhueta. Tecido encorpado, opaco e com ótima recuperação — não desbota nem afina com o uso.",
+"d": "🔥 CONJUNTO CALÇA — PROMOÇÃO 🔥\n\nSeu novo look favorito para treinar e arrasar! ✨ Um conjunto pensado para unir conforto, estilo e praticidade, com uma combinação que deixa o visual moderno e versátil.\n\n💫 Destaques:\n• Conjunto com calça\n• Tecido confortável\n• Modelagem moderna\n• Ótimo ajuste ao corpo\n• Ideal para academia e dia a dia\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Não usar alvejante, não deixar de molho ou torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para deixar sua rotina ainda mais estilosa!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1768825941_45b3e4be4c991ebf8453.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1768825855_dbc2e877af257748dc9f.webp"
@@ -504,11 +508,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P009",
-"n": "Conjunto Short · Modelo 03",
-"p": 79.9,
+"n": "Conjunto supreme promocional fz3984611",
+"p": 49.97,
 "v": 160,
 "c": "Conjuntos Short",
-"d": "Conjunto de top e short em suplex de alta compressão. Cintura alta que não marca, tecido opaco no agachamento e secagem rápida. Perfeito para treino, caminhada ou o dia a dia.",
+"d": "🔥 CONJUNTO SHORT DUPLO — PROMOÇÃO 🔥\n\nUm look completo que une estilo, conforto e praticidade! ✨ O short com duas camadas proporciona mais segurança e liberdade para se movimentar, sendo ideal para treinos e atividades do dia a dia.\n\n✨ Destaques:\n• Short com camada dupla\n• Confortável e leve\n• Boa liberdade de movimento\n• Modelagem moderna\n• Ideal para academia e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Conforto e estilo em um único look!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1776388720_a84e1db9687b8bb254d1.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1776388714_a19bf25740285a4ba811.webp"
@@ -516,11 +520,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P010",
-"n": "Conjunto Short · Modelo 04",
-"p": 69.9,
+"n": "Conjunto supreme promocional fz3724424",
+"p": 49.97,
 "v": 150,
 "c": "Conjuntos Short",
-"d": "Conjunto de top e short em suplex de alta compressão. Cintura alta que não marca, tecido opaco no agachamento e secagem rápida. Perfeito para treino, caminhada ou o dia a dia.",
+"d": "🔥 CONJUNTO SHORT — PROMOÇÃO 🔥\n\nLook completo para quem ama conforto e praticidade! ✨ Composto por short e parte de cima, é leve, versátil e ideal para treinos ou para o dia a dia.\n\n✨ Destaques:\n• Conjunto confortável\n• Modelagem leve e prática\n• Boa liberdade de movimento\n• Fácil de combinar\n• Perfeito para academia e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para você se movimentar com liberdade e estilo!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1768836815_cff51e025e22863c098d.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1768836805_8124218b42f518f14fbc.webp"
@@ -528,11 +532,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P011",
-"n": "Conjunto Short · Modelo 05",
-"p": 69.9,
+"n": "Conjunto supreme promocional fz3816581",
+"p": 49.97,
 "v": 144,
 "c": "Conjuntos Short",
-"d": "Conjunto de top e short em suplex de alta compressão. Cintura alta que não marca, tecido opaco no agachamento e secagem rápida. Perfeito para treino, caminhada ou o dia a dia.",
+"d": "🔥 CONJUNTO SHORT — PROMOÇÃO 🔥\n\nLook completo para quem ama conforto e praticidade! ✨ Composto por short e parte de cima, é leve, versátil e ideal para treinos ou para o dia a dia.\n\n✨ Destaques:\n• Conjunto confortável\n• Modelagem leve e prática\n• Boa liberdade de movimento\n• Fácil de combinar\n• Perfeito para academia e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para você se movimentar com liberdade e estilo!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1771807562_3179f2ae40cc62dbc02f.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1771807314_2dfff3bf0f52ed737476.webp"
@@ -540,11 +544,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P012",
-"n": "Conjunto Short · Modelo 06",
-"p": 79.9,
+"n": "Conjunto supreme promocional fz3984617",
+"p": 49.97,
 "v": 131,
 "c": "Conjuntos Short",
-"d": "Conjunto de top e short em suplex de alta compressão. Cintura alta que não marca, tecido opaco no agachamento e secagem rápida. Perfeito para treino, caminhada ou o dia a dia.",
+"d": "🔥 CONJUNTO SHORT DUPLO — PROMOÇÃO 🔥\n\nUm look completo que une estilo, conforto e praticidade! ✨ O short com duas camadas proporciona mais segurança e liberdade para se movimentar, sendo ideal para treinos e atividades do dia a dia.\n\n✨ Destaques:\n• Short com camada dupla\n• Confortável e leve\n• Boa liberdade de movimento\n• Modelagem moderna\n• Ideal para academia e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Conforto e estilo em um único look!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1776389092_c89672191bdaf2db9e0c.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1776389090_b61e270f25e6e25ef4a1.webp"
@@ -552,11 +556,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P013",
-"n": "Conjunto Legging · Modelo 06",
-"p": 89.9,
+"n": "Conjunto supreme promocional fz3724866",
+"p": 59.98,
 "v": 116,
 "c": "Conjuntos Calça",
-"d": "Conjunto de top e legging com cós alto e modelagem que afina a silhueta. Tecido encorpado, opaco e com ótima recuperação — não desbota nem afina com o uso.",
+"d": "🔥 CONJUNTO CALÇA — PROMOÇÃO 🔥\n\nSeu novo look favorito para treinar e arrasar! ✨ Um conjunto pensado para unir conforto, estilo e praticidade, com uma combinação que deixa o visual moderno e versátil.\n\n💫 Destaques:\n• Conjunto com calça\n• Tecido confortável\n• Modelagem moderna\n• Ótimo ajuste ao corpo\n• Ideal para academia e dia a dia\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Não usar alvejante, não deixar de molho ou torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para deixar sua rotina ainda mais estilosa!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1768834751_f912f7f6ce949c37cd61.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1768834814_b0fe28d0b0c303483c59.webp"
@@ -564,11 +568,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P014",
-"n": "Conjunto Legging · Modelo 07",
-"p": 89.9,
+"n": "Conjunto supreme promocional fz3074041",
+"p": 59.98,
 "v": 112,
 "c": "Conjuntos Calça",
-"d": "Conjunto de top e legging com cós alto e modelagem que afina a silhueta. Tecido encorpado, opaco e com ótima recuperação — não desbota nem afina com o uso.",
+"d": "🔥 CONJUNTO CALÇA — PROMOÇÃO 🔥\n\nSeu novo look favorito para treinar e arrasar! ✨ Um conjunto pensado para unir conforto, estilo e praticidade, com uma combinação que deixa o visual moderno e versátil.\n\n💫 Destaques:\n• Conjunto com calça\n• Tecido confortável\n• Modelagem moderna\n• Ótimo ajuste ao corpo\n• Ideal para academia e dia a dia\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Não usar alvejante, não deixar de molho ou torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para deixar sua rotina ainda mais estilosa!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1748721695_65e9fffdad87037fd484.jpg.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1748721696_d0f5403a88c3cb94a31d.jpg.webp"
@@ -576,11 +580,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P015",
-"n": "Conjunto Legging · Modelo 08",
-"p": 89.9,
+"n": "Conjunto supreme promocional fz3724362",
+"p": 59.98,
 "v": 103,
 "c": "Conjuntos Calça",
-"d": "Conjunto de top e legging com cós alto e modelagem que afina a silhueta. Tecido encorpado, opaco e com ótima recuperação — não desbota nem afina com o uso.",
+"d": "🔥 CONJUNTO CALÇA — PROMOÇÃO 🔥\n\nSeu novo look favorito para treinar e arrasar! ✨ Um conjunto pensado para unir conforto, estilo e praticidade, com uma combinação que deixa o visual moderno e versátil.\n\n💫 Destaques:\n• Conjunto com calça\n• Tecido confortável\n• Modelagem moderna\n• Ótimo ajuste ao corpo\n• Ideal para academia e dia a dia\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Não usar alvejante, não deixar de molho ou torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para deixar sua rotina ainda mais estilosa!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1768827916_7104cb2208b78a1c0d16.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1768827884_1dc808dae6bb15a83631.webp"
@@ -588,11 +592,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P016",
-"n": "Conjunto Legging · Modelo 09",
-"p": 89.9,
+"n": "Conjunto supreme promocional fz3724438",
+"p": 59.98,
 "v": 102,
 "c": "Conjuntos Calça",
-"d": "Conjunto de top e legging com cós alto e modelagem que afina a silhueta. Tecido encorpado, opaco e com ótima recuperação — não desbota nem afina com o uso.",
+"d": "🔥 CONJUNTO CALÇA — PROMOÇÃO 🔥\n\nSeu novo look favorito para treinar e arrasar! ✨ Um conjunto pensado para unir conforto, estilo e praticidade, com uma combinação que deixa o visual moderno e versátil.\n\n💫 Destaques:\n• Conjunto com calça\n• Tecido confortável\n• Modelagem moderna\n• Ótimo ajuste ao corpo\n• Ideal para academia e dia a dia\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Não usar alvejante, não deixar de molho ou torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para deixar sua rotina ainda mais estilosa",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1768828835_62e1b7b4947f6fb67529.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1768828827_5e7da9c6f7c2930bcbdc.webp"
@@ -600,11 +604,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P017",
-"n": "Conjunto Legging · Modelo 10",
-"p": 89.9,
+"n": "Conjunto supreme promocional fz3984658",
+"p": 59.98,
 "v": 100,
 "c": "Conjuntos Calça",
-"d": "Conjunto de top e legging com cós alto e modelagem que afina a silhueta. Tecido encorpado, opaco e com ótima recuperação — não desbota nem afina com o uso.",
+"d": "🔥 CONJUNTO CALÇA — PROMOÇÃO 🔥\n\nSeu novo look favorito para treinar e arrasar! ✨ Um conjunto pensado para unir conforto, estilo e praticidade, com uma combinação que deixa o visual moderno e versátil.\n\n💫 Destaques:\n• Conjunto com calça\n• Tecido confortável\n• Modelagem moderna\n• Ótimo ajuste ao corpo\n• Ideal para academia e dia a dia\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Não usar alvejante, não deixar de molho ou torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para deixar sua rotina ainda mais estilosa!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1776390415_a42c13ecd47bcc1dc4cb.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1776390411_0445911ec08ce838f171.webp"
@@ -612,11 +616,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P018",
-"n": "Conjunto Short · Modelo 07",
-"p": 69.9,
+"n": "Conjunto supreme promocional fz3074095",
+"p": 49.97,
 "v": 96,
 "c": "Conjuntos Short",
-"d": "Conjunto de top e short em suplex de alta compressão. Cintura alta que não marca, tecido opaco no agachamento e secagem rápida. Perfeito para treino, caminhada ou o dia a dia.",
+"d": "🔥 CONJUNTO SHORT — PROMOÇÃO 🔥\n\nLook completo para quem ama conforto e praticidade! ✨ Composto por short e parte de cima, é leve, versátil e ideal para treinos ou para o dia a dia.\n\n✨ Destaques:\n• Conjunto confortável\n• Modelagem leve e prática\n• Boa liberdade de movimento\n• Fácil de combinar\n• Perfeito para academia e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para você se movimentar com liberdade e estilo!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1748723643_bdbae100254861ad1c18.jpg.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1748723642_6fc831b1072170e908f4.jpg.webp"
@@ -624,11 +628,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P019",
-"n": "Conjunto Short · Modelo 08",
-"p": 69.9,
+"n": "Conjunto supreme promocional fz3724419",
+"p": 49.97,
 "v": 95,
 "c": "Conjuntos Short",
-"d": "Conjunto de top e short em suplex de alta compressão. Cintura alta que não marca, tecido opaco no agachamento e secagem rápida. Perfeito para treino, caminhada ou o dia a dia.",
+"d": "🔥 CONJUNTO SHORT — PROMOÇÃO 🔥\n\nLook completo para quem ama conforto e praticidade! ✨ Composto por short e parte de cima, é leve, versátil e ideal para treinos ou para o dia a dia.\n\n✨ Destaques:\n• Conjunto confortável\n• Modelagem leve e prática\n• Boa liberdade de movimento\n• Fácil de combinar\n• Perfeito para academia e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para você se movimentar com liberdade e estilo!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1768828711_687e627e4ad39fe82acf.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1768828630_e2138cb8e9672bd75d97.webp"
@@ -636,11 +640,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P020",
-"n": "Macacão Fitness · Modelo 01",
-"p": 89.9,
+"n": "Macacão supreme promocional fz3984654",
+"p": 59.98,
 "v": 91,
 "c": "Macacão",
-"d": "Macacão fitness de corpo inteiro em tecido de alta compressão. Modela cintura, levanta o bumbum e dispensa combinação — você veste uma peça só e está pronta.",
+"d": "🔥 MACACÃO FITNESS — PROMOÇÃO 🔥\n\nPraticidade e estilo em uma única peça! ✨ O macacão proporciona conforto, liberdade de movimento e um visual moderno, perfeito para treinos e para o dia a dia.\n\n✨ Destaques:\n• Peça única e prática\n• Tecido confortável e flexível\n• Ótimo caimento\n• Liberdade para se movimentar\n• Visual moderno e versátil\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Vista, combine e arrase no treino!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1776390173_f455ef64cade3fe6107a.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1776390177_defee1e762cdaf12ea73.webp"
@@ -648,11 +652,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P021",
-"n": "Conjunto Short · Modelo 09",
-"p": 69.9,
+"n": "Conjunto supreme promocional fz3724767",
+"p": 49.97,
 "v": 88,
 "c": "Conjuntos Short",
-"d": "Conjunto de top e short em suplex de alta compressão. Cintura alta que não marca, tecido opaco no agachamento e secagem rápida. Perfeito para treino, caminhada ou o dia a dia.",
+"d": "🔥 CONJUNTO SHORT — PROMOÇÃO 🔥\n\nLook completo para quem ama conforto e praticidade! ✨ Composto por short e parte de cima, é leve, versátil e ideal para treinos ou para o dia a dia.\n\n✨ Destaques:\n• Conjunto confortável\n• Modelagem leve e prática\n• Boa liberdade de movimento\n• Fácil de combinar\n• Perfeito para academia e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para você se movimentar com liberdade e estilo!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1768833212_c6f96abf1f7d296e81da.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1768833115_95d79d4b5f4ce6f98c51.webp"
@@ -660,11 +664,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P022",
-"n": "Conjunto Short · Modelo 10",
-"p": 79.9,
+"n": "Conjunto supreme promocional fz4321780",
+"p": 49.97,
 "v": 87,
 "c": "Conjuntos Short",
-"d": "Conjunto de top e short em suplex de alta compressão. Cintura alta que não marca, tecido opaco no agachamento e secagem rápida. Perfeito para treino, caminhada ou o dia a dia.",
+"d": "🔥 CONJUNTO SHORT DUPLO — PROMOÇÃO 🔥\n\nUm look completo que une estilo, conforto e praticidade! ✨ O short com duas camadas proporciona mais segurança e liberdade para se movimentar, sendo ideal para treinos e atividades do dia a dia.\n\n✨ Destaques:\n• Short com camada dupla\n• Confortável e leve\n• Boa liberdade de movimento\n• Modelagem moderna\n• Ideal para academia e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Conforto e estilo em um único look!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1785791964_73aba19829819cb62864.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1785791978_cae9625159b488a3b4b9.webp"
@@ -672,11 +676,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P023",
-"n": "Conjunto Plus Size · Modelo 01",
-"p": 89.9,
+"n": "Conjunto plus size supreme promocional fz3598148",
+"p": 59.97,
 "v": 86,
 "c": "Plus Size",
-"d": "Conjunto plus size com modelagem pensada para o corpo real: cós largo que não enrola, tecido firme e acabamento que sustenta sem incomodar. Conforto do primeiro ao último exercício.",
+"d": "🔥 PLUS SIZE FITNESS — PROMOÇÃO 🔥\n\nConforto, praticidade e estilo para todos os momentos! ✨ Modelagens desenvolvidas em tamanhos maiores, com tecido confortável, flexível e ótimo caimento, perfeitas para treinos e para o dia a dia.\n\n✨ Destaques:\n• Tamanhos Plus Size\n• Tecido confortável e flexível\n• Ótima liberdade de movimento\n• Modelagem moderna\n• Ideal para treino e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Mais opções de tamanho para você encontrar o look perfeito!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1764208815_dcacdfa7ec6e10476af8.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1764208753_42ecbc1d89221553e5e6.webp"
@@ -684,11 +688,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P024",
-"n": "Conjunto Short · Modelo 11",
-"p": 69.9,
+"n": "Conjunto supreme promocional fz3984622",
+"p": 49.97,
 "v": 82,
 "c": "Conjuntos Short",
-"d": "Conjunto de top e short em suplex de alta compressão. Cintura alta que não marca, tecido opaco no agachamento e secagem rápida. Perfeito para treino, caminhada ou o dia a dia.",
+"d": "🔥 CONJUNTO SHORT — PROMOÇÃO 🔥\n\nLook completo para quem ama conforto e praticidade! ✨ Composto por short e parte de cima, é leve, versátil e ideal para treinos ou para o dia a dia.\n\n✨ Destaques:\n• Conjunto confortável\n• Modelagem leve e prática\n• Boa liberdade de movimento\n• Fácil de combinar\n• Perfeito para academia e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para você se movimentar com liberdade e estilo!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1776389376_bae10a87c834f42dc7d3.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1776389373_6c6f6c03166e7ab67a36.webp"
@@ -696,11 +700,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P025",
-"n": "Conjunto Short Saia · Modelo 02",
-"p": 89.9,
+"n": "Conjunto supreme promocional fz3816583",
+"p": 49.97,
 "v": 81,
 "c": "Short Saia",
-"d": "Conjunto com short saia: o short de compressão por baixo e o caimento leve da saia por cima. Liberdade para treinar com a elegância de quem sai do estúdio direto para a rua.",
+"d": "🔥 SHORT DUPLO SAIA — PROMOÇÃO 🔥\n\nFeminilidade, conforto e praticidade em uma só peça! ✨ O modelo une a delicadeza da saia com a segurança do short interno, garantindo liberdade para se movimentar durante os treinos.\n\n✨ Destaques:\n• Saia com short interno\n• Confortável e leve\n• Ótima liberdade de movimento\n• Modelagem moderna\n• Ideal para academia e dia a dia\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Estilo e conforto para acompanhar cada movimento!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1771807656_35eb457e33122c2772b8.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1771807645_732597e0d85b3d76ea36.webp"
@@ -708,11 +712,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P026",
-"n": "Conjunto Legging · Modelo 11",
-"p": 100.9,
+"n": "Conjunto supreme promocional fz3724838",
+"p": 59.98,
 "v": 80,
 "c": "Conjuntos Calça",
-"d": "Conjunto de top e legging com cós alto e modelagem que afina a silhueta. Tecido encorpado, opaco e com ótima recuperação — não desbota nem afina com o uso.",
+"d": "🔥 CONJUNTO CALÇA — PROMOÇÃO 🔥\n\nSeu novo look favorito para treinar e arrasar! ✨ Um conjunto pensado para unir conforto, estilo e praticidade, com uma combinação que deixa o visual moderno e versátil.\n\n💫 Destaques:\n• Conjunto com calça\n• Tecido confortável\n• Modelagem moderna\n• Ótimo ajuste ao corpo\n• Ideal para academia e dia a dia\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Não usar alvejante, não deixar de molho ou torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para deixar sua rotina ainda mais estilosa!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1768827728_e7dc3916f86c082bebf4.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1768827789_1d18c1462bf5464ae7bc.webp"
@@ -720,11 +724,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P027",
-"n": "Conjunto Plus Size · Modelo 02",
-"p": 99.9,
+"n": "Conjunto plus size supreme promocional fz3598058",
+"p": 69.98,
 "v": 80,
 "c": "Plus Size",
-"d": "Conjunto plus size com modelagem pensada para o corpo real: cós largo que não enrola, tecido firme e acabamento que sustenta sem incomodar. Conforto do primeiro ao último exercício.",
+"d": "🔥 PLUS SIZE FITNESS — PROMOÇÃO 🔥\n\nConforto, praticidade e estilo para todos os momentos! ✨ Modelagens desenvolvidas em tamanhos maiores, com tecido confortável, flexível e ótimo caimento, perfeitas para treinos e para o dia a dia.\n\n✨ Destaques:\n• Tamanhos Plus Size\n• Tecido confortável e flexível\n• Ótima liberdade de movimento\n• Modelagem moderna\n• Ideal para treino e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Mais opções de tamanho para você encontrar o look perfeito!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1764205408_2b48f45004cae11ed498.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1764205396_773ea66efbf9ec6a2fc9.webp"
@@ -732,11 +736,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P028",
-"n": "Macacão Fitness · Modelo 02",
-"p": 89.9,
+"n": "Macacão supreme promocional fz3984655",
+"p": 59.98,
 "v": 75,
 "c": "Macacão",
-"d": "Macacão fitness de corpo inteiro em tecido de alta compressão. Modela cintura, levanta o bumbum e dispensa combinação — você veste uma peça só e está pronta.",
+"d": "🔥 MACACÃO FITNESS — PROMOÇÃO 🔥\n\nPraticidade e estilo em uma única peça! ✨ O macacão proporciona conforto, liberdade de movimento e um visual moderno, perfeito para treinos e para o dia a dia.\n\n✨ Destaques:\n• Peça única e prática\n• Tecido confortável e flexível\n• Ótimo caimento\n• Liberdade para se movimentar\n• Visual moderno e versátil\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Vista, combine e arrase no treino!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1776390049_1f23a86a38d039b58cb0.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1776390046_c7e5da0372e1aa6bcd2a.webp"
@@ -744,11 +748,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P029",
-"n": "Conjunto Legging · Modelo 12",
-"p": 99.9,
+"n": "Conjunto plus size supreme promocional fz3744994",
+"p": 59.98,
 "v": 74,
 "c": "Conjuntos Calça",
-"d": "Conjunto de top e legging com cós alto e modelagem que afina a silhueta. Tecido encorpado, opaco e com ótima recuperação — não desbota nem afina com o uso.",
+"d": "🔥 PLUS SIZE FITNESS — PROMOÇÃO 🔥\n\nConforto, praticidade e estilo para todos os momentos! ✨ Modelagens desenvolvidas em tamanhos maiores, com tecido confortável, flexível e ótimo caimento, perfeitas para treinos e para o dia a dia.\n\n✨ Destaques:\n• Tamanhos Plus Size\n• Tecido confortável e flexível\n• Ótima liberdade de movimento\n• Modelagem moderna\n• Ideal para treino e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Mais opções de tamanho para você encontrar o look perfeito!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1769451658_0960182f467faaa5024c.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1769451725_1d354f8602685712357e.webp"
@@ -756,11 +760,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P030",
-"n": "Conjunto Short · Modelo 12",
-"p": 79.9,
+"n": "Conjunto supreme promocional fz3074176",
+"p": 59.88,
 "v": 73,
 "c": "Conjuntos Short",
-"d": "Conjunto de top e short em suplex de alta compressão. Cintura alta que não marca, tecido opaco no agachamento e secagem rápida. Perfeito para treino, caminhada ou o dia a dia.",
+"d": "🔥 CONJUNTO CALÇA — PROMOÇÃO 🔥\n\nSeu novo look favorito para treinar e arrasar! ✨ Um conjunto pensado para unir conforto, estilo e praticidade, com uma combinação que deixa o visual moderno e versátil.\n\n💫 Destaques:\n• Conjunto com calça\n• Tecido confortável\n• Modelagem moderna\n• Ótimo ajuste ao corpo\n• Ideal para academia e dia a dia\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Não usar alvejante, não deixar de molho ou torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para deixar sua rotina ainda mais estilosa!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1748725904_f92f5cb21687d8917c1b.jpg.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1748725906_25840faad5a08f84ac94.jpg.webp"
@@ -768,11 +772,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P031",
-"n": "Conjunto Short · Modelo 13",
-"p": 69.9,
+"n": "Conjunto supreme promocional fz3724424",
+"p": 49.97,
 "v": 73,
 "c": "Conjuntos Short",
-"d": "Conjunto de top e short em suplex de alta compressão. Cintura alta que não marca, tecido opaco no agachamento e secagem rápida. Perfeito para treino, caminhada ou o dia a dia.",
+"d": "🔥 CONJUNTO SHORT — PROMOÇÃO 🔥\n\nLook completo para quem ama conforto e praticidade! ✨ Composto por short e parte de cima, é leve, versátil e ideal para treinos ou para o dia a dia.\n\n✨ Destaques:\n• Conjunto confortável\n• Modelagem leve e prática\n• Boa liberdade de movimento\n• Fácil de combinar\n• Perfeito para academia e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para você se movimentar com liberdade e estilo!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1768828750_0180d8913b438f083907.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1768828811_762f772fdfc3e248f713.webp"
@@ -780,11 +784,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P032",
-"n": "Conjunto Short · Modelo 14",
-"p": 79.9,
+"n": "Conjunto supreme promocional fz3984620",
+"p": 49.97,
 "v": 69,
 "c": "Conjuntos Short",
-"d": "Conjunto de top e short em suplex de alta compressão. Cintura alta que não marca, tecido opaco no agachamento e secagem rápida. Perfeito para treino, caminhada ou o dia a dia.",
+"d": "🔥 CONJUNTO SHORT DUPLO — PROMOÇÃO 🔥\n\nUm look completo que une estilo, conforto e praticidade! ✨ O short com duas camadas proporciona mais segurança e liberdade para se movimentar, sendo ideal para treinos e atividades do dia a dia.\n\n✨ Destaques:\n• Short com camada dupla\n• Confortável e leve\n• Boa liberdade de movimento\n• Modelagem moderna\n• Ideal para academia e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Conforto e estilo em um único look!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1776389070_24dc4c41d2562a8bc74f.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1776389067_02f89ea7520df22473b4.webp"
@@ -792,11 +796,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P033",
-"n": "Conjunto Plus Size · Modelo 03",
-"p": 89.9,
+"n": "Conjunto plus size supreme promocional fz3598151",
+"p": 59.97,
 "v": 69,
 "c": "Plus Size",
-"d": "Conjunto plus size com modelagem pensada para o corpo real: cós largo que não enrola, tecido firme e acabamento que sustenta sem incomodar. Conforto do primeiro ao último exercício.",
+"d": "🔥 PLUS SIZE FITNESS — PROMOÇÃO 🔥\n\nConforto, praticidade e estilo para todos os momentos! ✨ Modelagens desenvolvidas em tamanhos maiores, com tecido confortável, flexível e ótimo caimento, perfeitas para treinos e para o dia a dia.\n\n✨ Destaques:\n• Tamanhos Plus Size\n• Tecido confortável e flexível\n• Ótima liberdade de movimento\n• Modelagem moderna\n• Ideal para treino e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Mais opções de tamanho para você encontrar o look perfeito!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1764208945_f9b4c966ee4958d42b4d.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1764208934_f06977eb79ed99178da8.webp"
@@ -804,11 +808,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P034",
-"n": "Conjunto Plus Size · Modelo 04",
-"p": 89.9,
+"n": "Conjunto plus size supreme promocional fz3598155",
+"p": 69.97,
 "v": 69,
 "c": "Plus Size",
-"d": "Conjunto plus size com modelagem pensada para o corpo real: cós largo que não enrola, tecido firme e acabamento que sustenta sem incomodar. Conforto do primeiro ao último exercício.",
+"d": "🔥 PLUS SIZE FITNESS — PROMOÇÃO 🔥\n\nConforto, praticidade e estilo para todos os momentos! ✨ Modelagens desenvolvidas em tamanhos maiores, com tecido confortável, flexível e ótimo caimento, perfeitas para treinos e para o dia a dia.\n\n✨ Destaques:\n• Tamanhos Plus Size\n• Tecido confortável e flexível\n• Ótima liberdade de movimento\n• Modelagem moderna\n• Ideal para treino e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Mais opções de tamanho para você encontrar o look perfeito!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1764209028_939a35bfb8562366f634.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1764209019_5ebf304320804d2b085c.webp"
@@ -816,11 +820,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P035",
-"n": "Conjunto Tactel · Modelo 01",
-"p": 79.9,
+"n": "Conjunto supreme promocional fz42237702",
+"p": 49.97,
 "v": 64,
 "c": "Tactel",
-"d": "Conjunto de casaco e short em tactel, leve e com toque acetinado. Ideal para o pré e pós-treino, para viagens e para os dias em que o conforto vem primeiro.",
+"d": "🔥 SHORT TACTEL FEMININO PONTO FITNESS 🔥\n\nLeve, confortável e com secagem rápida! Perfeito para treinos e para o dia a dia. 🏋️‍♀️✨\n\n✅ Tecido Tactel\n✅ Leve e confortável\n✅ Secagem rápida\n✅ Liberdade de movimento\n\n🧼 Como lavar: lavar com água fria, não usar alvejante, não deixar de molho e secar à sombra. Evite altas temperaturas.",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1783621092_f3e167df81fb227d5a3f.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1783621096_547496c36fd662a564a7.webp"
@@ -828,11 +832,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P036",
-"n": "Conjunto Legging · Modelo 13",
-"p": 89.9,
+"n": "Conjunto supreme promocional fz3724866",
+"p": 59.98,
 "v": 63,
 "c": "Conjuntos Calça",
-"d": "Conjunto de top e legging com cós alto e modelagem que afina a silhueta. Tecido encorpado, opaco e com ótima recuperação — não desbota nem afina com o uso.",
+"d": "🔥 CONJUNTO CALÇA — PROMOÇÃO 🔥\n\nSeu novo look favorito para treinar e arrasar! ✨ Um conjunto pensado para unir conforto, estilo e praticidade, com uma combinação que deixa o visual moderno e versátil.\n\n💫 Destaques:\n• Conjunto com calça\n• Tecido confortável\n• Modelagem moderna\n• Ótimo ajuste ao corpo\n• Ideal para academia e dia a dia\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Não usar alvejante, não deixar de molho ou torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para deixar sua rotina ainda mais estilosa!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1768826222_080fd3a11f847d070016.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1768826214_5c3156eddf830a62c474.webp"
@@ -840,11 +844,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P037",
-"n": "Macaquinho Fitness · Modelo 01",
-"p": 79.9,
+"n": "Macaquinho supreme promocional fz3984652",
+"p": 49.97,
 "v": 62,
 "c": "Macaquinho",
-"d": "Macaquinho fitness com short embutido e alça ajustável. Leve, confortável e com aquele caimento que valoriza as curvas sem apertar.",
+"d": "🔥 MACAQUINHO PONTO FITNESS 🔥\n\nConforto, praticidade e estilo para seus treinos! ✨\n\n✅ Tecido confortável\n✅ Ótima liberdade de movimento\n✅ Modelagem que valoriza o conforto\n✅ Ideal para treino e dia a dia\n\n🧼 Como lavar: lavar com água fria, não usar alvejante, não deixar de molho e secar à sombra. Evite altas temperaturas.",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1776389906_cb7fe29b2c719399492f.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1776389903_a56dff1045df38f86aaf.webp"
@@ -852,11 +856,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P038",
-"n": "Conjunto Short · Modelo 15",
-"p": 79.9,
+"n": "Conjunto supreme promocional fz3984619",
+"p": 49.97,
 "v": 62,
 "c": "Conjuntos Short",
-"d": "Conjunto de top e short em suplex de alta compressão. Cintura alta que não marca, tecido opaco no agachamento e secagem rápida. Perfeito para treino, caminhada ou o dia a dia.",
+"d": "🔥 CONJUNTO SHORT DUPLO — PROMOÇÃO 🔥\n\nUm look completo que une estilo, conforto e praticidade! ✨ O short com duas camadas proporciona mais segurança e liberdade para se movimentar, sendo ideal para treinos e atividades do dia a dia.\n\n✨ Destaques:\n• Short com camada dupla\n• Confortável e leve\n• Boa liberdade de movimento\n• Modelagem moderna\n• Ideal para academia e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Conforto e estilo em um único look!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1776389141_6d055c211f0e34095b68.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1776389139_ffb3dbe6d9380b9af447.webp"
@@ -864,11 +868,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P039",
-"n": "Macaquinho Fitness · Modelo 02",
-"p": 79.9,
+"n": "Macaquinho supreme promocional FZ3984648",
+"p": 49.97,
 "v": 62,
 "c": "Macaquinho",
-"d": "Macaquinho fitness com short embutido e alça ajustável. Leve, confortável e com aquele caimento que valoriza as curvas sem apertar.",
+"d": "🔥 MACAQUINHO PONTO FITNESS 🔥\n\nConforto, praticidade e estilo para seus treinos! ✨\n\n✅ Tecido confortável\n✅ Ótima liberdade de movimento\n✅ Modelagem que valoriza o conforto\n✅ Ideal para treino e dia a dia\n\n🧼 Como lavar: lavar com água fria, não usar alvejante, não deixar de molho e secar à sombra. Evite altas temperaturas.",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1776389560_46e15e87dd0300e8b662.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1776389558_f7ab74031fc8ed9a688c.webp"
@@ -876,11 +880,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P040",
-"n": "Conjunto Plus Size · Modelo 05",
-"p": 99.9,
+"n": "Conjunto plus size supreme promocional fz3598056",
+"p": 69.98,
 "v": 60,
 "c": "Plus Size",
-"d": "Conjunto plus size com modelagem pensada para o corpo real: cós largo que não enrola, tecido firme e acabamento que sustenta sem incomodar. Conforto do primeiro ao último exercício.",
+"d": "🔥 PLUS SIZE FITNESS — PROMOÇÃO 🔥\n\nConforto, praticidade e estilo para todos os momentos! ✨ Modelagens desenvolvidas em tamanhos maiores, com tecido confortável, flexível e ótimo caimento, perfeitas para treinos e para o dia a dia.\n\n✨ Destaques:\n• Tamanhos Plus Size\n• Tecido confortável e flexível\n• Ótima liberdade de movimento\n• Modelagem moderna\n• Ideal para treino e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Mais opções de tamanho para você encontrar o look perfeito!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1764205199_3e1300436bc0e7a293a4.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1764205181_f6b4d68e9632be407c23.webp"
@@ -888,11 +892,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P041",
-"n": "Conjunto Legging · Modelo 14",
-"p": 89.9,
+"n": "Conjunto supreme promocional fz3919083",
+"p": 59.98,
 "v": 60,
 "c": "Conjuntos Calça",
-"d": "Conjunto de top e legging com cós alto e modelagem que afina a silhueta. Tecido encorpado, opaco e com ótima recuperação — não desbota nem afina com o uso.",
+"d": "🔥 CONJUNTO CALÇA — PROMOÇÃO 🔥\n\nSeu novo look favorito para treinar e arrasar! ✨ Um conjunto pensado para unir conforto, estilo e praticidade, com uma combinação que deixa o visual moderno e versátil.\n\n💫 Destaques:\n• Conjunto com calça\n• Tecido confortável\n• Modelagem moderna\n• Ótimo ajuste ao corpo\n• Ideal para academia e dia a dia\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Não usar alvejante, não deixar de molho ou torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Um look completo para deixar sua rotina ainda mais estilosa!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1774495938_20f73ce6bc83ee16c8a4.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1774495934_702b54ddd173c2b171f8.webp"
@@ -900,11 +904,11 @@ const PRODUTOS_BASE = [
 },
 {
 "id": "P042",
-"n": "Conjunto Plus Size · Modelo 06",
-"p": 89.9,
+"n": "Conjunto plus size supreme promocional fz4078491",
+"p": 59.97,
 "v": 54,
 "c": "Plus Size",
-"d": "Conjunto plus size com modelagem pensada para o corpo real: cós largo que não enrola, tecido firme e acabamento que sustenta sem incomodar. Conforto do primeiro ao último exercício.",
+"d": "🔥 PLUS SIZE FITNESS — PROMOÇÃO 🔥\n\nConforto, praticidade e estilo para todos os momentos! ✨ Modelagens desenvolvidas em tamanhos maiores, com tecido confortável, flexível e ótimo caimento, perfeitas para treinos e para o dia a dia.\n\n✨ Destaques:\n• Tamanhos Plus Size\n• Tecido confortável e flexível\n• Ótima liberdade de movimento\n• Modelagem moderna\n• Ideal para treino e rotina\n\n🧺 Cuidados:\nLavar com água fria e sabão neutro. Evitar alvejante, deixar de molho e torcer. Secar à sombra e evitar altas temperaturas.\n\n💖 Mais opções de tamanho para você encontrar o look perfeito!",
 "g": [
 "https://arquivos-cdn.facilzap.app.br/produtos/1779161842_c84c73108e97d8fefe22.webp",
 "https://arquivos-cdn.facilzap.app.br/produtos/1779161826_fb1526b3ae96f0bae696.webp"
@@ -952,7 +956,8 @@ function renderGrid(){
       <div class="card-b">
         <span class="cat">${p.c}</span>
         <h3>${esc(p.n)}</h3>
-        <p class="desc">${esc(p.d)}</p>
+        <p class="desc clamp">${esc(p.d)}</p>
+        <button class="vermais" type="button">ver mais</button>
         <div class="sizes">
           <label>Tamanho</label>
           <div class="size-row" data-id="${p.id}">
@@ -968,12 +973,22 @@ function renderGrid(){
         </div>
       </div>
     </article>`).join("");
+  grid.querySelectorAll(".card").forEach(c => {
+    const d = c.querySelector(".desc"), b = c.querySelector(".vermais");
+    if(d.scrollHeight <= d.clientHeight + 2) b.style.display = "none";
+  });
 }
 document.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => {
   document.querySelectorAll(".chip").forEach(x => x.classList.remove("on"));
   c.classList.add("on"); FILTRO = c.dataset.f; renderGrid();
 }));
 grid.addEventListener("click", e => {
+  const vm = e.target.closest(".vermais");
+  if(vm){
+    const d = vm.previousElementSibling;
+    vm.textContent = d.classList.toggle("clamp") ? "ver mais" : "ver menos";
+    return;
+  }
   const sz = e.target.closest(".sz");
   if(sz){
     sz.parentElement.querySelectorAll(".sz").forEach(x => x.classList.remove("on"));
