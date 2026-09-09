@@ -1219,5 +1219,150 @@ renderGrid(); renderCart();
 <!-- CRM Loja — rastreamento de trafego pago. Liga cada visita, clique de WhatsApp
      e venda ao anuncio que trouxe a pessoa. Painel: https://crmloja.vercel.app -->
 <script src="https://crmloja.vercel.app/tracker.js" data-lp="premium-pfitness"></script>
+
+<!-- ============================================================================
+     Identificacao antes do WhatsApp — alimenta o CRM (crmloja.vercel.app).
+     Sem isto, o clique no WhatsApp e anonimo: o navegador nao sabe quem e a
+     pessoa, so o WhatsApp sabe, e so depois que ela manda a mensagem.
+
+     Regras:
+     - quem ja se identificou uma vez nao ve de novo (fica no aparelho, 90 dias);
+     - falha do CRM ou da internet NAO segura a venda: abre o WhatsApp assim mesmo;
+     - o nome vai junto na mensagem, para a loja ja saber com quem fala.
+     ============================================================================ -->
+<style>
+  #idb{position:fixed;inset:0;background:rgba(14,13,12,.72);backdrop-filter:blur(3px);
+       display:none;align-items:center;justify-content:center;z-index:9999;padding:18px}
+  #idb.on{display:flex}
+  #idc{background:var(--paper,#f6f2ec);color:var(--ink,#0e0d0c);border-radius:var(--r,14px);
+       width:100%;max-width:380px;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.35)}
+  #idc h3{margin:0 0 4px;font-size:19px;line-height:1.25}
+  #idc p.sub{margin:0 0 16px;font-size:13px;color:#6b625a;line-height:1.45}
+  #idc label{display:block;font-size:12px;font-weight:600;margin:12px 0 5px;letter-spacing:.02em}
+  #idc input{width:100%;box-sizing:border-box;padding:13px 12px;font-size:16px;
+             border:1px solid #d8cfc2;border-radius:10px;background:#fff;color:inherit}
+  #idc input:focus{outline:2px solid var(--gold,#c9a227);outline-offset:1px;border-color:transparent}
+  #idc .err{color:#b3261e;font-size:12px;margin-top:5px;display:none}
+  #idc .err.on{display:block}
+  #idOk{width:100%;margin-top:18px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;
+        border:0;border-radius:10px;background:#0e0d0c;color:#fff}
+  #idOk[disabled]{opacity:.6;cursor:default}
+  #idSkip{display:block;width:100%;margin-top:10px;background:none;border:0;cursor:pointer;
+          font-size:12.5px;color:#8b8177;text-decoration:underline;padding:6px}
+  #idc .lgpd{margin:14px 0 0;font-size:11px;color:#8b8177;line-height:1.45}
+</style>
+
+<div id="idb" role="dialog" aria-modal="true" aria-labelledby="idt">
+  <div id="idc">
+    <h3 id="idt">Só falta seu nome</h3>
+    <p class="sub">Para a gente já te chamar pelo nome e separar seu pedido no WhatsApp.</p>
+    <label for="idNome">Seu nome</label>
+    <input id="idNome" type="text" autocomplete="name" placeholder="Maria Silva" maxlength="80">
+    <label for="idFone">Seu WhatsApp</label>
+    <input id="idFone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="(34) 99999-9999" maxlength="20">
+    <div class="err" id="idErr"></div>
+    <button id="idOk" type="button">Continuar para o WhatsApp</button>
+    <button id="idSkip" type="button">Prefiro só conversar</button>
+    <p class="lgpd">Usamos seus dados apenas para responder sobre este pedido.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+  var CHAVE = "pfp_lead", DIAS = 90;
+  var caixa = document.getElementById("idb");
+  var iNome = document.getElementById("idNome");
+  var iFone = document.getElementById("idFone");
+  var erro  = document.getElementById("idErr");
+  var btnOk = document.getElementById("idOk");
+  var destino = null;
+
+  function jaIdentificado(){
+    try {
+      var g = JSON.parse(localStorage.getItem(CHAVE) || "null");
+      return g && (Date.now() - (g.t || 0) < DIAS * 864e5) ? g : null;
+    } catch (e) { return null; }
+  }
+
+  /* Acrescenta o nome na mensagem, para a loja ja saber com quem fala. */
+  function comNome(href, nome){
+    try {
+      var u = new URL(href);
+      var t = u.searchParams.get("text") || "";
+      u.searchParams.set("text", t + "\n\nMeu nome: " + nome);
+      return u.toString();
+    } catch (e) { return href; }
+  }
+
+  function ir(href){ window.location.href = href; }
+
+  function abrir(href){
+    destino = href;
+    erro.className = "err";
+    var g = jaIdentificado();
+    if (g) { iNome.value = g.nome || ""; iFone.value = g.fone || ""; }
+    caixa.className = "on";
+    setTimeout(function(){ (iNome.value ? iFone : iNome).focus(); }, 60);
+  }
+
+  function fechar(){ caixa.className = ""; }
+
+  /* Intercepta qualquer botao que leve ao WhatsApp, inclusive os criados por JS. */
+  document.addEventListener("click", function(e){
+    /* Blindagem: se qualquer coisa aqui falhar, NAO segura o clique — o link do
+       WhatsApp segue normal. Perder o cadastro e ruim; perder a venda e pior. */
+    try {
+      var a = e.target && e.target.closest ? e.target.closest('a[href*="wa.me"]') : null;
+      if (!a) return;
+      var g = jaIdentificado();
+      if (g) { e.preventDefault(); ir(comNome(a.href, g.nome)); return; }
+      e.preventDefault();
+      abrir(a.href);
+    } catch (err) { /* deixa o link seguir sozinho */ }
+  }, true);
+
+  document.getElementById("idSkip").onclick = function(){
+    /* Nunca segurar a venda: quem nao quer se identificar vai para o WhatsApp igual. */
+    fechar();
+    if (destino) ir(destino);
+  };
+
+  btnOk.onclick = async function(){
+    var nome = (iNome.value || "").trim();
+    var fone = (iFone.value || "").trim();
+    var digitos = fone.replace(/\D/g, "");
+
+    if (nome.length < 2)   { erro.textContent = "Escreva seu nome.";                 erro.className = "err on"; iNome.focus(); return; }
+    if (digitos.length < 10){ erro.textContent = "Coloque o WhatsApp com DDD.";      erro.className = "err on"; iFone.focus(); return; }
+
+    btnOk.disabled = true;
+    btnOk.textContent = "Abrindo o WhatsApp...";
+    /* Rede lenta ou CRM fora do ar nao podem deixar a pessoa presa no modal. */
+    var salvaVidas = setTimeout(function(){ ir(destino || "https://wa.me/5534991298865"); }, 6000);
+
+    try { localStorage.setItem(CHAVE, JSON.stringify({ nome: nome, fone: fone, t: Date.now() })); } catch (e) {}
+
+    /* O lead vai para o CRM com a origem (campanha, anuncio, pagina) ja anexada
+       pelo proprio tracker. Se falhar, segue para o WhatsApp do mesmo jeito. */
+    try {
+      if (window.CRM && window.CRM.submitLead) {
+        await Promise.race([
+          window.CRM.submitLead({ name: nome, phone: fone, consent: true, formId: "whatsapp-premium" }),
+          new Promise(function(r){ setTimeout(r, 3500); })
+        ]);
+      }
+    } catch (e) {}
+
+    if (window.fbq) { try { window.fbq("track", "Lead"); } catch (e) {} }
+
+    clearTimeout(salvaVidas);
+    ir(comNome(destino || "https://wa.me/5534991298865", nome));
+  };
+
+  caixa.addEventListener("click", function(e){ if (e.target === caixa) fechar(); });
+  document.addEventListener("keydown", function(e){ if (e.key === "Escape") fechar(); });
+})();
+</script>
+
 </body>
 </html>
