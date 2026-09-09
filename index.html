@@ -934,7 +934,10 @@ const esc = s => String(s).replace(/[<>&"]/g, c => ({"<":"&lt;",">":"&gt;","&":"
 
 /* ---------- rastreamento de trafego pago ---------- */
 /* Cole o ID do Pixel da Meta entre as aspas (so numeros). Vazio = rastreamento desligado. */
-const PIXEL_ID = "1619275782890705";
+const PIXEL_IDS = [
+  "1619275782890705",   // Ponto Fitness for Men - conta 2066479440331279 (tem historico)
+  "1324081499549983"    // Pixel.Ct01 - conta ct-PFitnes01 (a que tem saldo)
+];
 
 /* Guarda de qual anuncio a visita veio, por 30 dias. */
 const ORIGEM = (function(){
@@ -956,13 +959,14 @@ function selo(){
 }
 
 function ev(nome, dados){ if(window.fbq) window.fbq("track", nome, dados || {}); }
-if(PIXEL_ID){
+if(PIXEL_IDS.length){
   !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
   n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
   n.push=n;n.loaded=!0;n.version="2.0";n.queue=[];t=b.createElement(e);t.async=!0;
   t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
   (window,document,"script","https://connect.facebook.net/en_US/fbevents.js");
-  window.fbq("init", PIXEL_ID); ev("PageView");
+  PIXEL_IDS.forEach(id => window.fbq("init", id));
+  ev("PageView");
 }
 const jaVisto = new Set();
 
