@@ -1364,5 +1364,28 @@ renderGrid(); renderCart();
 })();
 </script>
 
+
+<script>
+/* Quem chega pelo anuncio ja sabe o que quer: viu "Conjunto por R$ 49,97" e clicou.
+   Na pagina normal esse preco so aparece 5,6 telas abaixo — a promessa some na
+   chegada e mais da metade vai embora sem tocar em nada (medido: 38 de 71 visitas).
+   Para esse visitante, a Colecao sobe para logo abaixo do menu. Quem vem do
+   Instagram ou digita o endereco continua vendo a pagina como sempre foi.
+   Para desligar, e so remover este bloco. */
+(function () {
+  try {
+    var q = new URLSearchParams(location.search);
+    var deAnuncio = q.get("utm_content") || q.get("utm_campaign") || q.get("fbclid") ||
+                    (q.get("utm_source") || "").length > 0;
+    if (!deAnuncio) return;
+
+    var catalogo = document.getElementById("colecao");
+    var menu = document.querySelector("header.nav") || document.querySelector("header");
+    if (!catalogo || !menu || !menu.parentNode || catalogo.previousElementSibling === menu) return;
+
+    menu.parentNode.insertBefore(catalogo, menu.nextSibling);
+  } catch (e) { /* qualquer problema: pagina segue exatamente como estava */ }
+})();
+</script>
 </body>
 </html>
