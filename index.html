@@ -1318,11 +1318,15 @@ renderGrid(); renderCart();
       if (g) { e.preventDefault(); ir(comNome(a.href, g.nome)); return; }
       e.preventDefault();
       abrir(a.href);
+      /* Sem isto nao da para saber se quem clicou no WhatsApp desistiu no
+         formulario ou nem chegou a ve-lo. */
+      try { window.CRM && window.CRM.track("FORM_START", { label: "identificacao" }); } catch (x) {}
     } catch (err) { /* deixa o link seguir sozinho */ }
   }, true);
 
   document.getElementById("idSkip").onclick = function(){
     /* Nunca segurar a venda: quem nao quer se identificar vai para o WhatsApp igual. */
+    try { window.CRM && window.CRM.track("BUTTON_CLICK", { label: "pulou a identificacao" }); } catch (x) {}
     fechar();
     if (destino) ir(destino);
   };
