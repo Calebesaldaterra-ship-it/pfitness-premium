@@ -1366,12 +1366,18 @@ renderGrid(); renderCart();
 
 
 <script>
-/* Quem chega pelo anuncio ja sabe o que quer: viu "Conjunto por R$ 49,97" e clicou.
-   Na pagina normal esse preco so aparece 5,6 telas abaixo — a promessa some na
-   chegada e mais da metade vai embora sem tocar em nada (medido: 38 de 71 visitas).
-   Para esse visitante, a Colecao sobe para logo abaixo do menu. Quem vem do
-   Instagram ou digita o endereco continua vendo a pagina como sempre foi.
-   Para desligar, e so remover este bloco. */
+/* Visitante de anuncio ve produto e PRECO na primeira tela.
+   -------------------------------------------------------------------------
+   O anuncio promete "Conjunto por R$ 49,97". Na pagina normal esse preco so
+   aparecia 5,6 telas abaixo: primeiro a mascote, depois o texto da colecao,
+   depois os filtros, e a foto do produto sozinha tem 439px. Medido em 09/09:
+   38 de 71 visitas pagas saiam sem tocar em nada e nenhuma chegava ao WhatsApp.
+
+   Para quem chega com parametro de anuncio:
+     1. uma faixa no topo mostra os mais baratos com o preco em destaque;
+     2. a secao Colecao sobe para logo abaixo dessa faixa.
+   Quem vem do Instagram ou digita o endereco NAO ve nada disso: a pagina
+   continua com a mascote primeiro. Para desligar, remova este bloco. */
 (function () {
   try {
     var q = new URLSearchParams(location.search);
@@ -1379,12 +1385,89 @@ renderGrid(); renderCart();
                     (q.get("utm_source") || "").length > 0;
     if (!deAnuncio) return;
 
-    var catalogo = document.getElementById("colecao");
     var menu = document.querySelector("header.nav") || document.querySelector("header");
-    if (!catalogo || !menu || !menu.parentNode || catalogo.previousElementSibling === menu) return;
+    var catalogo = document.getElementById("colecao");
+    if (!menu || !catalogo || !menu.parentNode) return;
 
-    menu.parentNode.insertBefore(catalogo, menu.nextSibling);
-  } catch (e) { /* qualquer problema: pagina segue exatamente como estava */ }
+    /* 1. colecao logo abaixo do menu */
+    if (catalogo.previousElementSibling !== menu) menu.parentNode.insertBefore(catalogo, menu.nextSibling);
+
+    var estilo = document.createElement("style");
+    estilo.textContent =
+      "#faixaOferta{background:var(--paper-2,#ece5db);padding:14px 0 16px;border-bottom:1px solid var(--line,#2a2724)}" +
+      "#faixaOferta .fo-tit{font-size:15px;font-weight:700;margin:0 16px 10px;line-height:1.3;color:var(--ink,#0e0d0c)}" +
+      "#faixaOferta .fo-tit b{color:#7a5c00}" +
+      "#faixaOferta .fo-rol{display:flex;gap:10px;overflow-x:auto;padding:0 16px 4px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}" +
+      "#faixaOferta .fo-rol::-webkit-scrollbar{display:none}" +
+      "#faixaOferta .fo-it{flex:0 0 138px;scroll-snap-align:start;background:#fff;border-radius:12px;overflow:hidden;cursor:pointer;border:0;padding:0;text-align:left;box-shadow:0 2px 8px rgba(0,0,0,.10)}" +
+      "#faixaOferta .fo-it img{width:100%;height:150px;object-fit:cover;display:block}" +
+      "#faixaOferta .fo-b{padding:8px 9px 10px}" +
+      "#faixaOferta .fo-n{font-size:11px;line-height:1.25;color:#6b625a;height:27px;overflow:hidden;margin:0 0 4px}" +
+      "#faixaOferta .fo-p{font-size:17px;font-weight:800;color:var(--ink,#0e0d0c);display:block;line-height:1.1}" +
+      "#faixaOferta .fo-x{font-size:10px;color:#8b8177}" +
+      ".card.piscou{outline:3px solid var(--gold,#c9a227);outline-offset:4px;border-radius:14px}";
+    document.head.appendChild(estilo);
+
+    /* 2. faixa montada a partir dos proprios cards — segue o catalogo real */
+    function montar() {
+      var cards = [].slice.call(document.querySelectorAll("#colecao article.card"));
+      if (!cards.length) return false;
+
+      var itens = [];
+      cards.forEach(function (c) {
+        var img = c.querySelector("img");
+        var h3 = c.querySelector("h3");
+        var pr = c.querySelector(".price");
+        if (!img || !h3 || !pr) return;
+        var n = Number((pr.textContent || "").replace(/[^\d,]/g, "").replace(",", "."));
+        if (!isFinite(n) || !n) return;
+        itens.push({ card: c, foto: img.getAttribute("src"), nome: h3.textContent.trim(), preco: pr.textContent.trim(), valor: n });
+      });
+      if (!itens.length) return false;
+
+      itens.sort(function (a, b) { return a.valor - b.valor; });
+      var barato = itens[0].preco;
+      var mostrar = itens.slice(0, 8);
+
+      var faixa = document.createElement("section");
+      faixa.id = "faixaOferta";
+      var tit = document.createElement("p");
+      tit.className = "fo-tit";
+      tit.innerHTML = "Conjunto completo a partir de <b>" + barato + "</b> · toque para ver";
+      faixa.appendChild(tit);
+
+      var rol = document.createElement("div");
+      rol.className = "fo-rol";
+      mostrar.forEach(function (it) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "fo-it";
+        b.innerHTML =
+          '<img loading="lazy" alt="" src="' + it.foto + '">' +
+          '<div class="fo-b"><p class="fo-n"></p><span class="fo-p"></span>' +
+          '<span class="fo-x">3x sem juros</span></div>';
+        b.querySelector(".fo-n").textContent = it.nome;
+        b.querySelector(".fo-p").textContent = it.preco;
+        b.addEventListener("click", function () {
+          it.card.scrollIntoView({ behavior: "smooth", block: "center" });
+          it.card.classList.add("piscou");
+          setTimeout(function () { it.card.classList.remove("piscou"); }, 2200);
+        });
+        rol.appendChild(b);
+      });
+      faixa.appendChild(rol);
+      menu.parentNode.insertBefore(faixa, menu.nextSibling);
+      return true;
+    }
+
+    /* O catalogo e desenhado por JS: espera os cards existirem. */
+    if (!montar()) {
+      var tentativas = 0;
+      var t = setInterval(function () {
+        if (montar() || ++tentativas > 40) clearInterval(t);
+      }, 150);
+    }
+  } catch (e) { /* qualquer problema: a pagina segue exatamente como estava */ }
 })();
 </script>
 </body>
