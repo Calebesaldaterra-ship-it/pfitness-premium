@@ -989,14 +989,14 @@ document.querySelectorAll(".ctaW").forEach(a => {
 const grid = document.getElementById("grid");
 function renderGrid(){
   grid.innerHTML = PRODUTOS.filter(p => FILTRO === "all" || p.c === FILTRO).map(p => `
-    <article class="card">
-      <div class="ph-wrap">${p.v >= 150 ? '<span class="badge">Mais querido</span>' : ''}
+    <article class="card" data-pid="${p.id}" data-crm-product="${p.id}" data-crm-label="${esc(p.n)}" data-crm-view>
+      <div class="ph-wrap abrir-prod" role="button" tabindex="0" aria-label="Ver ${esc(p.n)}">${p.v >= 150 ? '<span class="badge">Mais querido</span>' : ''}
         <img class="ph" src="${p.g[0]}" alt="${esc(p.n)}" loading="lazy">
         ${p.g[1] ? `<img class="ph" src="${p.g[1]}" alt="" loading="lazy">` : ''}
       </div>
       <div class="card-b">
         <span class="cat">${p.c}</span>
-        <h3>${esc(p.n)}</h3>
+        <h3 class="abrir-prod" role="button" tabindex="0">${esc(p.n)}</h3>
         <p class="desc clamp">${esc(p.d)}</p>
         <button class="vermais" type="button">ver mais</button>
         <div class="sizes">
@@ -1024,6 +1024,8 @@ document.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () =
   c.classList.add("on"); FILTRO = c.dataset.f; renderGrid();
 }));
 grid.addEventListener("click", e => {
+  const ap = e.target.closest(".abrir-prod");
+  if(ap){ const c = ap.closest(".card"); if(c && c.dataset.pid) window.abrirProduto(c.dataset.pid); return; }
   const vm = e.target.closest(".vermais");
   if(vm){
     const d = vm.previousElementSibling;
@@ -1046,7 +1048,15 @@ grid.addEventListener("click", e => {
   const t = card.querySelector(".sz.on")?.dataset.t || TAMANHOS[1];
   addItem(b.dataset.id, t);
   const pr = PRODUTOS.find(x => x.id === b.dataset.id);
-  if(pr) ev("AddToCart", {content_ids:[pr.id], content_name:pr.n, content_type:"product", value:pr.p, currency:"BRL"});
+  if(pr){
+    ev("AddToCart", {content_ids:[pr.id], content_name:pr.n, content_type:"product", value:pr.p, currency:"BRL"});
+    window.__produtoAtual = pr.id;
+    try { store.set("pfp_prod_click", {id:pr.id, n:pr.n, p:pr.p, t:Date.now()}); } catch(e){}
+    try {
+      if(window.CRM && window.CRM.track)
+        window.CRM.track("ADD_TO_CART", {productId: pr.id, label: pr.n, sku: pr.sku || pr.id, price: pr.p});
+    } catch(e){}
+  }
   b.textContent = "Na sacola ✓"; b.classList.add("ok");
   setTimeout(() => { b.textContent = "Comprar"; b.classList.remove("ok"); }, 1200);
 });
@@ -1100,7 +1110,7 @@ function renderCart(){
 }
 function pedidoTexto(L, tot, n){
   let t = "*Pedido — Ponto Fitness Premium*\n\n";
-  L.forEach(l => { t += "• " + l.p.n + "\n  Tam. " + l.t + " · " + l.q + "x " + brl(l.p.p) + " = " + brl(l.q*l.p.p) + "\n"; });
+  L.forEach(l => { t += "• " + l.p.n + " (cód. " + (l.p.sku || l.p.id) + ")\n  Tam. " + l.t + " · " + l.q + "x " + brl(l.p.p) + " = " + brl(l.q*l.p.p) + "\n"; });
   t += "\n" + n + (n>1?" peças":" peça") + "\n*Total: " + brl(tot) + "*\n\nPode confirmar a cor e o frete para o meu CEP?" + selo();
   return t;
 }
@@ -1213,6 +1223,177 @@ document.getElementById("admCopiar").onclick = async () => {
 };
 
 renderGrid(); renderCart();
+
+
+/* ============================================================================
+   PRODUTO POR LINK   —   premium.pfitness.com.br/?p=P001
+   ----------------------------------------------------------------------------
+   Cada card do carrossel do anuncio aponta para a URL do SEU produto. Aqui a
+   gente le o id, confere na lista real de produtos e abre a ficha certa.
+   O id e sempre a referencia: nunca preco, nunca posicao do card, nunca nome.
+   Id desconhecido nao quebra nada — o site abre normal.
+   ============================================================================ */
+const SITE = "https://premium.pfitness.com.br";
+const skuDe = p => p.sku || p.id;
+const urlProduto = p => SITE + "/p/" + encodeURIComponent(p.id) + "/";
+
+function acharProduto(id){
+  if(id === null || id === undefined) return null;
+  const alvo = String(id).trim().toUpperCase();
+  return PRODUTOS.find(x => String(x.id).trim().toUpperCase() === alvo) || null;
+}
+/* Produto sem foto valida cai na arte da campanha em vez de quebrar o layout. */
+function fotoDe(p){
+  const lista = (p && p.g) || [];
+  const u = lista.find(x => typeof x === "string" && /^https?:\/\//i.test(x));
+  return u || (SITE + "/campanha/00-capa.jpg");
+}
+
+/* A mensagem que chega no WhatsApp da loja. Leva nome, valor, codigo e a URL do
+   produto — e e essa URL que faz o WhatsApp desenhar o card com a foto. */
+function msgProduto(p, tam){
+  return "Olá! 👋 Gostei deste produto e gostaria de saber mais informações."
+    + "\n\n🛍️ Produto: " + p.n
+    + "\n💰 Valor: " + brl(p.p)
+    + "\n🔖 Código: " + skuDe(p)
+    + (tam ? "\n📏 Tamanho: " + tam : "")
+    + "\n\n📸 " + urlProduto(p)
+    + "\n\nGostaria de saber as cores e tamanhos disponíveis." + selo();
+}
+
+/* ---------- ficha do produto (abre pelo link do anuncio ou clicando no card) ---------- */
+(function(){
+  const css = document.createElement("style");
+  css.textContent = ""
+  + "#pdb{position:fixed;inset:0;background:rgba(14,13,12,.74);backdrop-filter:blur(3px);"
+  + "display:none;align-items:center;justify-content:center;z-index:9998;padding:16px}"
+  + "#pdb.on{display:flex}"
+  + "#pdc{background:var(--paper,#f6f2ec);color:var(--ink,#0e0d0c);border-radius:var(--r,14px);"
+  + "width:100%;max-width:760px;max-height:92vh;overflow:auto;box-shadow:0 24px 60px rgba(0,0,0,.4)}"
+  + "#pdc .pd-top{display:grid;grid-template-columns:1fr 1fr}"
+  + "#pdc .pd-foto{aspect-ratio:1/1;background:var(--paper-2,#ece5db);overflow:hidden}"
+  + "#pdc .pd-foto img{width:100%;height:100%;object-fit:cover;display:block}"
+  + "#pdc .pd-info{padding:22px;display:flex;flex-direction:column;gap:9px}"
+  + "#pdc .pd-cat{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:#8a6d12;font-weight:600}"
+  + "#pdc h3{margin:0;font-size:1.2rem;line-height:1.25}"
+  + "#pdc .pd-cod{font-size:.75rem;color:#8b8177;letter-spacing:.04em}"
+  + "#pdc .pd-preco{font-family:var(--f-d,serif);font-size:1.7rem;line-height:1.1;margin-top:4px}"
+  + "#pdc .pd-parc{font-size:.78rem;color:#8a8378}"
+  + "#pdc .pd-desc{font-size:.84rem;color:#6b6459;white-space:pre-line;max-height:9.5em;overflow:auto;margin:4px 0 0}"
+  + "#pdc .pd-lbl{font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:#948c80;margin-top:6px}"
+  + "#pdc .pd-tams{display:flex;flex-wrap:wrap;gap:6px}"
+  + "#pdc .pd-tams button{padding:7px 12px;border:1px solid #d8cfc2;background:#fff;border-radius:8px;"
+  + "cursor:pointer;font-size:.82rem;color:inherit}"
+  + "#pdc .pd-tams button.on{background:var(--ink,#0e0d0c);color:#fff;border-color:transparent}"
+  + "#pdWa{display:block;text-align:center;margin-top:14px;padding:14px;border-radius:999px;"
+  + "background:#25d366;color:#072814;font-weight:700;text-decoration:none;font-size:.95rem}"
+  + "#pdAdd{margin-top:8px;width:100%;padding:12px;border-radius:999px;border:1px solid #d8cfc2;"
+  + "background:transparent;color:inherit;cursor:pointer;font-size:.88rem}"
+  + "#pdX{position:absolute;top:10px;right:14px;background:rgba(0,0,0,.55);color:#fff;border:0;"
+  + "width:34px;height:34px;border-radius:50%;font-size:20px;cursor:pointer;line-height:1}"
+  + "#pdc{position:relative}"
+  + "@media(max-width:640px){#pdc .pd-top{grid-template-columns:1fr}#pdc .pd-foto{aspect-ratio:4/5}}";
+  document.head.appendChild(css);
+
+  const cx = document.createElement("div");
+  cx.id = "pdb"; cx.setAttribute("role","dialog"); cx.setAttribute("aria-modal","true");
+  cx.innerHTML = '<div id="pdc"><button id="pdX" aria-label="Fechar">&times;</button>'
+    + '<div class="pd-top"><div class="pd-foto"><img id="pdImg" alt=""></div>'
+    + '<div class="pd-info"><span class="pd-cat" id="pdCat"></span><h3 id="pdNome"></h3>'
+    + '<span class="pd-cod" id="pdCod"></span><strong class="pd-preco" id="pdPreco"></strong>'
+    + '<span class="pd-parc" id="pdParc"></span><p class="pd-desc" id="pdDesc"></p>'
+    + '<span class="pd-lbl">Tamanho</span><div class="pd-tams" id="pdTams"></div>'
+    + '<a id="pdWa" href="#" target="_blank" rel="noopener">Falar no WhatsApp sobre este</a>'
+    + '<button id="pdAdd" type="button">Adicionar à sacola</button>'
+    + '</div></div></div>';
+  document.body.appendChild(cx);
+
+  let atual = null, tam = TAMANHOS[1];
+
+  function pintarWa(){
+    if(!atual) return;
+    document.getElementById("pdWa").href = waLink(msgProduto(atual, tam));
+  }
+
+  window.abrirProduto = function(id){
+    const p = acharProduto(id);
+    if(!p){ if(window.toast) toast("Produto não encontrado"); return false; }
+    atual = p; tam = TAMANHOS[1];
+
+    /* Identifica o produto JA no clique — nao espera chegar no WhatsApp.
+       Assim o CRM sabe qual produto a pessoa abriu mesmo que ela desista depois. */
+    window.__produtoAtual = p.id;
+    try { store.set("pfp_prod_click", {id:p.id, n:p.n, p:p.p, t:Date.now()}); } catch(e){}
+    try {
+      if(window.CRM && window.CRM.track)
+        window.CRM.track("PRODUCT_VIEW", {productId: p.id, label: p.n, sku: skuDe(p), price: p.p});
+    } catch(e){}
+
+    const img = document.getElementById("pdImg");
+    img.src = fotoDe(p); img.alt = p.n;
+    img.onerror = function(){ this.onerror = null; this.src = SITE + "/campanha/00-capa.jpg"; };
+    document.getElementById("pdCat").textContent   = p.c || "";
+    document.getElementById("pdNome").textContent  = p.n;
+    document.getElementById("pdCod").textContent   = "Código " + skuDe(p);
+    document.getElementById("pdPreco").textContent = brl(p.p);
+    document.getElementById("pdParc").textContent  = "ou 3x de " + brl(p.p/3) + " sem juros";
+    document.getElementById("pdDesc").textContent  = p.d || "";
+    document.getElementById("pdTams").innerHTML = TAMANHOS.map((t,i) =>
+      '<button type="button" data-t="' + t + '"' + (i===1?' class="on"':'') + '>' + t + '</button>').join("");
+    pintarWa();
+    cx.classList.add("on");
+    ev("ViewContent", {content_ids:[p.id], content_name:p.n, content_type:"product",
+                       value:p.p, currency:"BRL"});
+    return true;
+  };
+
+  function fechar(){ cx.classList.remove("on"); }
+  document.getElementById("pdX").onclick = fechar;
+  cx.addEventListener("click", e => { if(e.target === cx) fechar(); });
+  document.addEventListener("keydown", e => { if(e.key === "Escape") fechar(); });
+
+  document.getElementById("pdTams").addEventListener("click", e => {
+    const b = e.target.closest("button[data-t]"); if(!b) return;
+    document.querySelectorAll("#pdTams button").forEach(x => x.classList.remove("on"));
+    b.classList.add("on"); tam = b.dataset.t; pintarWa();
+  });
+
+  /* O CRM precisa saber de qual produto veio o lead. */
+  document.getElementById("pdWa").addEventListener("click", () => {
+    if(!atual) return;
+    window.__produtoAtual = atual.id;
+    ev("Contact", {content_ids:[atual.id], content_name:atual.n, content_type:"product",
+                   value:atual.p, currency:"BRL"});
+  });
+
+  document.getElementById("pdAdd").onclick = () => {
+    if(!atual) return;
+    addItem(atual.id, tam);
+    ev("AddToCart", {content_ids:[atual.id], content_name:atual.n, content_type:"product",
+                     value:atual.p, currency:"BRL"});
+    fechar(); openCart(true);
+  };
+
+  /* Chegou de um card do anuncio: ?p=P001 (aceita tambem ?produto= e #p/P001). */
+  function idDaUrl(){
+    const q = new URLSearchParams(location.search);
+    const v = q.get("p") || q.get("produto") || q.get("product_id") || q.get("sku");
+    if(v) return v;
+    const m = (location.hash || "").match(/^#p\/([A-Za-z0-9_-]+)/);
+    return m ? m[1] : null;
+  }
+  const alvo = idDaUrl();
+  if(alvo){
+    const p = acharProduto(alvo);
+    if(p){
+      /* Veio de um card do anuncio: qualquer botao de WhatsApp da pagina
+         (inclusive o flutuante) passa a falar deste produto. */
+      document.querySelectorAll("a.ctaW").forEach(a => { a.href = waLink(msgProduto(p, "")); });
+      window.__produtoAtual = p.id;
+    }
+    setTimeout(() => window.abrirProduto(alvo), 350);
+  }
+})();
 
 </script>
 
@@ -1351,7 +1532,7 @@ renderGrid(); renderCart();
     try {
       if (window.CRM && window.CRM.submitLead) {
         await Promise.race([
-          window.CRM.submitLead({ name: nome, phone: fone, consent: true, formId: "whatsapp-premium" }),
+          window.CRM.submitLead({ name: nome, phone: fone, consent: true, formId: "whatsapp-premium" + (window.__produtoAtual ? "-" + window.__produtoAtual : "") }),
           new Promise(function(r){ setTimeout(r, 3500); })
         ]);
       }
