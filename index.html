@@ -1050,12 +1050,7 @@ grid.addEventListener("click", e => {
   const pr = PRODUTOS.find(x => x.id === b.dataset.id);
   if(pr){
     ev("AddToCart", {content_ids:[pr.id], content_name:pr.n, content_type:"product", value:pr.p, currency:"BRL"});
-    window.__produtoAtual = pr.id;
-    try { store.set("pfp_prod_click", {id:pr.id, n:pr.n, p:pr.p, t:Date.now()}); } catch(e){}
-    try {
-      if(window.CRM && window.CRM.track)
-        window.CRM.track("ADD_TO_CART", {productId: pr.id, label: pr.n, sku: pr.sku || pr.id, price: pr.p});
-    } catch(e){}
+    window.marcarProduto(pr.id, false);
   }
   b.textContent = "Na sacola ✓"; b.classList.add("ok");
   setTimeout(() => { b.textContent = "Comprar"; b.classList.remove("ok"); }, 1200);
@@ -1261,6 +1256,23 @@ function msgProduto(p, tam){
     + "\n\nGostaria de saber as cores e tamanhos disponíveis." + selo();
 }
 
+/* Marca qual produto a pessoa tocou. Chamada em TODO ponto de clique — ficha,
+   botao Comprar e faixa de ofertas — para o CRM saber do produto ja no clique,
+   sem depender de ela chegar no WhatsApp.
+   `ctas=true` faz os botoes gerais de WhatsApp passarem a falar deste produto. */
+window.marcarProduto = function(id, ctas){
+  const p = acharProduto(id);
+  if(!p) return null;
+  window.__produtoAtual = p.id;
+  try { store.set("pfp_prod_click", {id:p.id, n:p.n, p:p.p, t:Date.now()}); } catch(e){}
+  try {
+    if(window.CRM && window.CRM.track)
+      window.CRM.track("PRODUCT_VIEW", {productId: p.id, label: p.n, sku: skuDe(p), price: p.p});
+  } catch(e){}
+  if(ctas) document.querySelectorAll("a.ctaW").forEach(a => { a.href = waLink(msgProduto(p, "")); });
+  return p;
+};
+
 /* ---------- ficha do produto (abre pelo link do anuncio ou clicando no card) ---------- */
 (function(){
   const css = document.createElement("style");
@@ -1320,14 +1332,7 @@ function msgProduto(p, tam){
     if(!p){ if(window.toast) toast("Produto não encontrado"); return false; }
     atual = p; tam = TAMANHOS[1];
 
-    /* Identifica o produto JA no clique — nao espera chegar no WhatsApp.
-       Assim o CRM sabe qual produto a pessoa abriu mesmo que ela desista depois. */
-    window.__produtoAtual = p.id;
-    try { store.set("pfp_prod_click", {id:p.id, n:p.n, p:p.p, t:Date.now()}); } catch(e){}
-    try {
-      if(window.CRM && window.CRM.track)
-        window.CRM.track("PRODUCT_VIEW", {productId: p.id, label: p.n, sku: skuDe(p), price: p.p});
-    } catch(e){}
+    window.marcarProduto(p.id, true);
 
     const img = document.getElementById("pdImg");
     img.src = fotoDe(p); img.alt = p.n;
@@ -1384,13 +1389,7 @@ function msgProduto(p, tam){
   }
   const alvo = idDaUrl();
   if(alvo){
-    const p = acharProduto(alvo);
-    if(p){
-      /* Veio de um card do anuncio: qualquer botao de WhatsApp da pagina
-         (inclusive o flutuante) passa a falar deste produto. */
-      document.querySelectorAll("a.ctaW").forEach(a => { a.href = waLink(msgProduto(p, "")); });
-      window.__produtoAtual = p.id;
-    }
+    window.marcarProduto(alvo, true);
     setTimeout(() => window.abrirProduto(alvo), 350);
   }
 })();
@@ -1634,6 +1633,12 @@ function msgProduto(p, tam){
         b.querySelector(".fo-n").textContent = it.nome;
         b.querySelector(".fo-p").textContent = it.preco;
         b.addEventListener("click", function () {
+          /* Identifica o produto no toque: o CRM registra e os botoes de
+             WhatsApp passam a falar deste item. O rolar e piscar continuam. */
+          try {
+            var pid = it.card.getAttribute("data-pid");
+            if (pid && window.marcarProduto) window.marcarProduto(pid, true);
+          } catch (e) {}
           it.card.scrollIntoView({ behavior: "smooth", block: "center" });
           it.card.classList.add("piscou");
           setTimeout(function () { it.card.classList.remove("piscou"); }, 2200);
