@@ -381,8 +381,8 @@ a.ct:hover{background:rgba(201,162,39,.07);color:var(--paper)}
     <header><h3>Painel administrativo</h3><button class="x" id="admClose">&times;</button></header>
     <div class="bd">
       <div class="lock" id="admLock">
-        <p>Acesso restrito. Entre para editar preços, tamanhos, nomes e descrições.</p>
-        <input type="text" id="admUser" placeholder="Usuário" autocomplete="username" style="margin:12px 0 10px">
+        <p>Acesso restrito. Entre com o seu e-mail para editar preços, tamanhos, nomes e descrições.</p>
+        <input type="email" id="admUser" placeholder="E-mail" autocomplete="username" style="margin:12px 0 10px">
         <input type="password" id="admSenha" placeholder="Senha" autocomplete="current-password" style="margin-bottom:12px">
         <button class="btn-s gold" id="admEntrar" style="width:100%">Entrar</button>
       </div>
@@ -404,7 +404,7 @@ a.ct:hover{background:rgba(201,162,39,.07);color:var(--paper)}
         </div>
         <div class="adm-list" id="admList"></div>
         <textarea id="admJson" style="display:none;margin-top:14px" rows="6" readonly></textarea>
-        <p class="hint">As alterações ficam salvas neste navegador. Para gravar de vez no site, clique em <strong>Copiar JSON</strong> e me envie o conteúdo. Atalhos: <strong>Alt + A</strong> ou adicione <strong>#admin</strong> ao final do endereço.</p>
+        <p class="hint" id="admStatus">As alterações são gravadas no banco da loja e aparecem na hora para todo mundo, em qualquer aparelho. Atalhos: <strong>Alt + A</strong> ou adicione <strong>#admin</strong> ao final do endereço.</p>
       </div>
     </div>
   </div>
@@ -995,6 +995,33 @@ const tamsDe = p => (Array.isArray(p.t) && p.t.length) ? p.t.slice() : TAMANHOS.
 const norTams = txt => txt.split(/[,;/|]+/).map(x => x.trim().toUpperCase())
   .filter((x,i,a) => x && a.indexOf(x) === i);
 
+/* ---------------------------------------------------------------------------
+   PONTE COM O BANCO DA LOJA (Firestore)
+   O modulo la embaixo chama PF_APLICAR quando o catalogo muda no banco, em
+   qualquer aparelho. Se o banco nao responder, o site segue com os valores
+   que ja vieram no arquivo — nada quebra.
+   --------------------------------------------------------------------------- */
+window.PF_APLICAR = function(mapa){
+  if(!mapa || typeof mapa !== "object") return;
+  PRODUTOS = PRODUTOS.map(base => {
+    const e = mapa[base.id]; if(!e) return base;
+    const o = Object.assign({}, base);
+    if(typeof e.n === "string" && e.n.trim()) o.n = e.n;
+    if(typeof e.p === "number" && isFinite(e.p) && e.p >= 0) o.p = e.p;
+    if(typeof e.d === "string" && e.d.trim()) o.d = e.d;
+    if(Array.isArray(e.t) && e.t.length) o.t = e.t;
+    return o;
+  });
+  store.set("pfp_produtos", mapa);
+  renderGrid(); renderCart();
+  const corpo = document.getElementById("admBody");
+  if(corpo && corpo.style.display !== "none") renderAdm(document.getElementById("admBusca").value);
+};
+window.PF_MAPA = function(){
+  const m = {}; PRODUTOS.forEach(p => m[p.id] = {n:p.n, p:p.p, d:p.d, t:tamsDe(p)});
+  return m;
+};
+
 /* ---------- catalogo ---------- */
 const grid = document.getElementById("grid");
 function renderGrid(){
@@ -1151,20 +1178,33 @@ document.addEventListener("keydown", e => {
 });
 if(location.hash === "#admin") abrirAdm();
 
-function entrar(){
+function abrirPainel(){
+  document.getElementById("admLock").style.display = "none";
+  document.getElementById("admBody").style.display = "";
+  document.getElementById("admSenha").value = "";
+  renderAdm();
+}
+window.PF_PAINEL_ABRIR = abrirPainel;
+
+async function entrar(){
   const u = document.getElementById("admUser").value.trim();
   const s = document.getElementById("admSenha").value;
-  if(u === ADM_USER && s === ADM_SENHA){
-    document.getElementById("admLock").style.display = "none";
-    document.getElementById("admBody").style.display = "";
-    document.getElementById("admSenha").value = "";
-    renderAdm();
-  } else toast("Usuário ou senha incorretos");
+  const btn = document.getElementById("admEntrar");
+  if(window.PF_AUTH){
+    btn.disabled = true; btn.textContent = "Entrando...";
+    const r = await window.PF_AUTH.entrar(u, s);
+    btn.disabled = false; btn.textContent = "Entrar";
+    if(r.ok) abrirPainel(); else toast(r.erro);
+    return;
+  }
+  if(u === ADM_USER && s === ADM_SENHA) abrirPainel();
+  else toast("Usuário ou senha incorretos");
 }
 document.getElementById("admEntrar").onclick = entrar;
 ["admUser","admSenha"].forEach(id => document.getElementById(id)
   .addEventListener("keydown", e => { if(e.key === "Enter") entrar(); }));
 document.getElementById("admSair").onclick = () => {
+  if(window.PF_AUTH) window.PF_AUTH.sair();
   document.getElementById("admBody").style.display = "none";
   document.getElementById("admLock").style.display = "";
   fecharAdm(); scrim.classList.remove("on");
@@ -1205,8 +1245,12 @@ function persistir(){
   const m = {}; PRODUTOS.forEach(p => m[p.id] = {n:p.n, p:p.p, d:p.d, t:tamsDe(p)});
   store.set("pfp_produtos", m);
   renderGrid(); renderCart();
+  if(window.PF_DB && window.PF_DB.ligado()) window.PF_DB.salvar(m);
 }
-document.getElementById("admSalvar").onclick = () => { coletar(); persistir(); toast("Alterações salvas"); };
+document.getElementById("admSalvar").onclick = () => {
+  coletar(); persistir();
+  if(!(window.PF_DB && window.PF_DB.ligado())) toast("Alterações salvas neste aparelho");
+};
 document.getElementById("admReset").onclick = () => {
   PRODUTOS = PRODUTOS_BASE.map(b => Object.assign({}, b));
   store.set("pfp_produtos", null);
@@ -1680,6 +1724,89 @@ window.marcarProduto = function(id, ctas){
     }
   } catch (e) { /* qualquer problema: a pagina segue exatamente como estava */ }
 })();
+</script>
+<script type="module">
+/* ===========================================================================
+   BANCO DA LOJA — Firestore do projeto ponto-fitness
+   ---------------------------------------------------------------------------
+   Um unico documento (site_ponto_fitness_premium/catalogo) guarda nome, preco,
+   tamanhos de cada produto. O site escuta esse documento: salvou no celular,
+   mudou no site de todo mundo na hora.
+   Ler e liberado para qualquer um. Gravar exige login — quem manda nisso sao
+   as regras do Firestore, nao esta pagina.
+   =========================================================================== */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, onSnapshot, setDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged,
+         setPersistence, browserLocalPersistence }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const CFG = {
+  apiKey: "AIzaSyA4r-A_7Ok3ulLSkjxjE8G78qbEQM4z09o",
+  authDomain: "ponto-fitness.firebaseapp.com",
+  projectId: "ponto-fitness",
+  storageBucket: "ponto-fitness.firebasestorage.app",
+  messagingSenderId: "650702339619",
+  appId: "1:650702339619:web:90d005e88bc79e208f3b96"
+};
+
+const aviso = t => { const e = document.getElementById("admStatus"); if(e) e.textContent = t; };
+
+try {
+  const app  = initializeApp(CFG);
+  const db   = getFirestore(app);
+  const auth = getAuth(app);
+  const ref  = doc(db, "site_ponto_fitness_premium", "catalogo");
+  let usuario = null;
+
+  /* catalogo ao vivo */
+  onSnapshot(ref,
+    snap => { const d = snap.data(); if(d && d.produtos) window.PF_APLICAR(d.produtos); },
+    err  => { console.warn("catalogo offline:", err.code); }
+  );
+
+  await setPersistence(auth, browserLocalPersistence).catch(() => {});
+  onAuthStateChanged(auth, u => {
+    usuario = u;
+    if(u && location.hash === "#admin" && window.PF_PAINEL_ABRIR) window.PF_PAINEL_ABRIR();
+    if(u) aviso("Conectada como " + u.email + ". O que você salvar aqui vale para todos os aparelhos na hora.");
+  });
+
+  const recado = {
+    "auth/invalid-credential": "E-mail ou senha incorretos",
+    "auth/invalid-email":      "Confira o e-mail digitado",
+    "auth/missing-password":   "Digite a senha",
+    "auth/too-many-requests":  "Muitas tentativas. Espere um minuto e tente de novo",
+    "auth/network-request-failed": "Sem internet no momento"
+  };
+
+  window.PF_AUTH = {
+    logado: () => !!usuario,
+    entrar: async (email, senha) => {
+      try { await signInWithEmailAndPassword(auth, email, senha); return {ok:true}; }
+      catch(e){ return {ok:false, erro: recado[e.code] || "Não consegui entrar (" + e.code + ")"}; }
+    },
+    sair: () => signOut(auth).catch(() => {})
+  };
+
+  window.PF_DB = {
+    ligado: () => !!usuario,
+    salvar: async mapa => {
+      try {
+        await setDoc(ref, { produtos: mapa, atualizadoEm: Date.now(), porQuem: usuario ? usuario.email : "" });
+        if(window.toast) toast("Salvo para todos os aparelhos");
+      } catch(e){
+        if(window.toast) toast(e.code === "permission-denied"
+          ? "Sem permissão para gravar — entre de novo"
+          : "Não consegui gravar no banco. Salvo só neste aparelho");
+      }
+    }
+  };
+} catch(e){
+  console.warn("Firebase indisponível:", e);
+  aviso("Banco da loja fora do ar: as alterações valem só neste aparelho. Use Copiar JSON e me envie.");
+}
 </script>
 </body>
 </html>
