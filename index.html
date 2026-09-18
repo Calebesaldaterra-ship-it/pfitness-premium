@@ -381,7 +381,7 @@ a.ct:hover{background:rgba(201,162,39,.07);color:var(--paper)}
     <header><h3>Painel administrativo</h3><button class="x" id="admClose">&times;</button></header>
     <div class="bd">
       <div class="lock" id="admLock">
-        <p>Acesso restrito. Entre para editar preços, nomes e descrições.</p>
+        <p>Acesso restrito. Entre para editar preços, tamanhos, nomes e descrições.</p>
         <input type="text" id="admUser" placeholder="Usuário" autocomplete="username" style="margin:12px 0 10px">
         <input type="password" id="admSenha" placeholder="Senha" autocomplete="current-password" style="margin-bottom:12px">
         <button class="btn-s gold" id="admEntrar" style="width:100%">Entrar</button>
@@ -399,6 +399,8 @@ a.ct:hover{background:rgba(201,162,39,.07);color:var(--paper)}
           <input type="number" id="bulkVal" step="0.01" min="0" placeholder="Valor" style="max-width:120px">
           <button class="btn-s" id="bulkFixo">Aplicar preço em todos</button>
           <button class="btn-s" id="bulkPct">Reajustar em %</button>
+          <input type="text" id="bulkTam" placeholder="Tamanhos (ex.: P, M, G)" style="max-width:190px">
+          <button class="btn-s" id="bulkTams">Aplicar tamanhos em todos</button>
         </div>
         <div class="adm-list" id="admList"></div>
         <textarea id="admJson" style="display:none;margin-top:14px" rows="6" readonly></textarea>
@@ -974,7 +976,10 @@ let PRODUTOS = (function(){
   const s = store.get("pfp_produtos");
   return PRODUTOS_BASE.map(b => {
     const e = s && s[b.id];
-    return e ? Object.assign({}, b, {n:e.n, p:e.p, d:e.d}) : Object.assign({}, b);
+    if(!e) return Object.assign({}, b);
+    const o = Object.assign({}, b, {n:e.n, p:e.p, d:e.d});
+    if(Array.isArray(e.t) && e.t.length) o.t = e.t;
+    return o;
   });
 })();
 let CART = store.get("pfp_cart") || {};   // chave: "id|tamanho"
@@ -984,6 +989,11 @@ document.querySelectorAll(".ctaW").forEach(a => {
   a.href = waLink(MSG + selo());
   a.addEventListener("click", () => ev("Contact"));
 });
+
+/* Tamanhos do produto: usa a lista propria se o admin definiu, senao a padrao. */
+const tamsDe = p => (Array.isArray(p.t) && p.t.length) ? p.t.slice() : TAMANHOS.slice();
+const norTams = txt => txt.split(/[,;/|]+/).map(x => x.trim().toUpperCase())
+  .filter((x,i,a) => x && a.indexOf(x) === i);
 
 /* ---------- catalogo ---------- */
 const grid = document.getElementById("grid");
@@ -1002,7 +1012,7 @@ function renderGrid(){
         <div class="sizes">
           <label>Tamanho</label>
           <div class="size-row" data-id="${p.id}">
-            ${TAMANHOS.map((t,i) => `<button class="sz${i===1?' on':''}" data-t="${t}">${t}</button>`).join("")}
+            ${tamsDe(p).map((t,i,a) => `<button class="sz${i===Math.min(1,a.length-1)?' on':''}" data-t="${t}">${t}</button>`).join("")}
           </div>
         </div>
         <div class="row">
@@ -1045,7 +1055,8 @@ grid.addEventListener("click", e => {
   }
   const b = e.target.closest(".add"); if(!b) return;
   const card = b.closest(".card");
-  const t = card.querySelector(".sz.on")?.dataset.t || TAMANHOS[1];
+  const prTam = PRODUTOS.find(x => x.id === b.dataset.id);
+  const t = card.querySelector(".sz.on")?.dataset.t || (prTam ? tamsDe(prTam)[0] : TAMANHOS[1]);
   addItem(b.dataset.id, t);
   const pr = PRODUTOS.find(x => x.id === b.dataset.id);
   if(pr){
@@ -1171,6 +1182,7 @@ function renderAdm(busca){
           <div><label>Nome</label><input data-k="n" value="${esc(p.n)}"></div>
           <div><label>Preço (R$)</label><input data-k="p" type="number" step="0.01" min="0" value="${p.p.toFixed(2)}"></div>
           <div><label>Categoria</label><input value="${p.c}" disabled></div>
+          <div><label>Tamanhos (separe por vírgula)</label><input data-k="t" value="${esc(tamsDe(p).join(", "))}" placeholder="P, M, G, GG"></div>
         </div>
         <div><label>Descrição</label><textarea data-k="d">${esc(p.d)}</textarea></div>
       </div>
@@ -1185,10 +1197,12 @@ function coletar(){
     const v = parseFloat(row.querySelector('[data-k="p"]').value);
     if(!isNaN(v) && v >= 0) p.p = v;
     p.d = row.querySelector('[data-k="d"]').value.trim() || p.d;
+    const ts = norTams(row.querySelector('[data-k="t"]').value);
+    p.t = ts.length ? ts : TAMANHOS.slice();
   });
 }
 function persistir(){
-  const m = {}; PRODUTOS.forEach(p => m[p.id] = {n:p.n, p:p.p, d:p.d});
+  const m = {}; PRODUTOS.forEach(p => m[p.id] = {n:p.n, p:p.p, d:p.d, t:tamsDe(p)});
   store.set("pfp_produtos", m);
   renderGrid(); renderCart();
 }
@@ -1209,9 +1223,15 @@ document.getElementById("bulkPct").onclick = () => {
   coletar(); PRODUTOS.forEach(p => p.p = Math.round(p.p * (1 + v/100) * 100)/100);
   persistir(); renderAdm(); toast("Preços reajustados em " + v + "%");
 };
+document.getElementById("bulkTams").onclick = () => {
+  const ts = norTams(document.getElementById("bulkTam").value);
+  if(!ts.length) return toast("Informe os tamanhos (ex.: P, M, G)");
+  coletar(); PRODUTOS.forEach(p => p.t = ts.slice());
+  persistir(); renderAdm(); toast("Tamanhos aplicados em todos");
+};
 document.getElementById("admCopiar").onclick = async () => {
   coletar();
-  const m = {}; PRODUTOS.forEach(p => m[p.id] = {n:p.n, p:p.p, d:p.d});
+  const m = {}; PRODUTOS.forEach(p => m[p.id] = {n:p.n, p:p.p, d:p.d, t:tamsDe(p)});
   const txt = JSON.stringify(m, null, 2);
   try { await navigator.clipboard.writeText(txt); toast("JSON copiado"); }
   catch(e){ const t = document.getElementById("admJson"); t.value = txt; t.style.display = ""; t.select(); }
@@ -1330,7 +1350,8 @@ window.marcarProduto = function(id, ctas){
   window.abrirProduto = function(id){
     const p = acharProduto(id);
     if(!p){ if(window.toast) toast("Produto não encontrado"); return false; }
-    atual = p; tam = TAMANHOS[1];
+    atual = p;
+    const tsP = tamsDe(p); tam = tsP[Math.min(1, tsP.length - 1)];
 
     window.marcarProduto(p.id, true);
 
@@ -1343,8 +1364,8 @@ window.marcarProduto = function(id, ctas){
     document.getElementById("pdPreco").textContent = brl(p.p);
     document.getElementById("pdParc").textContent  = "ou 3x de " + brl(p.p/3) + " sem juros";
     document.getElementById("pdDesc").textContent  = p.d || "";
-    document.getElementById("pdTams").innerHTML = TAMANHOS.map((t,i) =>
-      '<button type="button" data-t="' + t + '"' + (i===1?' class="on"':'') + '>' + t + '</button>').join("");
+    document.getElementById("pdTams").innerHTML = tsP.map((t,i,a) =>
+      '<button type="button" data-t="' + t + '"' + (i===Math.min(1,a.length-1)?' class="on"':'') + '>' + t + '</button>').join("");
     pintarWa();
     cx.classList.add("on");
     ev("ViewContent", {content_ids:[p.id], content_name:p.n, content_type:"product",
